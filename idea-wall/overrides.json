@@ -2,6 +2,10 @@
   "pages": {},
   "pulled": [],
   "extra_students": [
-    ["Arafa", "Yoseph"]
-  ]
+    [
+      "Arafa",
+      "Yoseph"
+    ]
+  ],
+  "blur": true
 }

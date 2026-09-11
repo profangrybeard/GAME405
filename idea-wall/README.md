@@ -125,10 +125,13 @@ the placement loop in CLAUDE.md.
   suggests its contents without giving them away. `blur off` deletes the
   copies, and the sharp slides are already underneath. Miro has no blur of its
   own.
-- **The frame is always 16:9**, so presenting it fills the classroom TV. The
-  grid is chosen to fit: 69 pitches lay out 9 across and 8 down.
-- **No designer's slides touch**, diagonals included. The order is worked out,
-  not random, so the same slides always give the same wall.
+- **The frame is always 16:9**, so presenting it fills the classroom TV. Past
+  63 the wall grows a column on the right and rows at the bottom, so the left
+  edge and the top never move.
+- **Slides already on the wall stay put.** A new slide takes the first open
+  spot that touches none of its designer's other slides, diagonals included.
+  The one exception is a slide touching its own designer's, which moves once.
+  The same slides always give the same wall.
 - **The counters are live.** PITCHED counts the slides on the wall, the line
   under it counts designers with at least one, and JAM TEAMS and PRODUCTION
   stay 5 and 2.

@@ -13,10 +13,11 @@ Run it from idea-wall/ after the render loop is done, pushed, and verified.
 
 The wall shows every delivered pitch and never fewer than 63 tiles. Until
 enough pitches arrive, placeholder tiles fill the rest under the names the wall
-has always had, so it can be demoed any time. Past 63 it grows with the
-pitches. The grid, the frame and the counters are worked out again on every
-run. The frame always stays 16:9 so it fills the classroom TV, and no
-designer's slides touch, diagonals included.
+has always had, so it can be demoed any time. A slide already on the wall stays
+in its spot. A new slide takes the first open spot that touches none of its
+designer's other slides, diagonals included. Past 63 the wall grows a column on
+the right and rows at the bottom, so the left edge and the top never move, and
+the frame always stays 16:9 so it fills the classroom TV.
 
 Miro has no blur or filter for images. With blur on, a blurred copy of every
 slide from slides/blur/ sits on top of it, so the wall suggests its contents
@@ -137,71 +138,71 @@ def slide_actions(old, box, sha, cover_sha, blur):
 # ---------- layout ----------
 
 def frame_for(n):
-    """Grid and a 16:9 frame for n tiles. The grid is centred left to right."""
-    best = None
-    for cols in range(max(1, math.ceil(math.sqrt(n))), 17):
-        rows = math.ceil(n / cols)
+    """Grid and a 16:9 frame for n tiles. The grid keeps the same left margin
+    and top at every size, so a slide already on the wall never has to move:
+    the wall grows a column at a time, and each wider frame is tall enough for
+    more rows at the bottom."""
+    cols = 9
+    while True:
         grid_w = cols * TILE_W + (cols - 1) * GUTTER
-        w = max(grid_w + 2 * MARGIN, HEADER_W)
-        h = TOP + rows * TILE_H + max(rows - 1, 0) * GUTTER + MARGIN
-        score = abs(math.log(w * 9 / (h * 16)))
-        if best is None or score < best[0]:
-            best = (score, cols, rows, grid_w, w, h)
-    _, cols, rows, grid_w, w, h = best
-    # Pad to exactly 16:9 so presenting the frame fills the TV.
-    if w * 9 < h * 16:
-        h = math.ceil(h / 9) * 9
-        w = h // 9 * 16
-    else:
-        w = math.ceil(w / 16) * 16
-        h = w // 16 * 9
-    return {"cols": cols, "rows": rows, "w": w, "h": h, "grid_w": grid_w, "x0": (w - grid_w) // 2}
+        w = grid_w + 2 * MARGIN  # a multiple of 16 at every width, so the 16:9 height is exact
+        h = w * 9 // 16
+        rows = (h - TOP - MARGIN + GUTTER) // (TILE_H + GUTTER)
+        if cols * rows >= n:
+            return {"cols": cols, "rows": rows, "w": w, "h": h, "grid_w": grid_w, "x0": MARGIN}
+        cols += 1
 
 
-def arrange(slides, cols):
-    """Order slides so no designer's slides touch, diagonals included.
-    Deterministic, not random: the same slides always give the same wall."""
-    queues = {}
-    for s in sorted(slides, key=lambda s: s["idea"]):
-        queues.setdefault(s["student"], []).append(s)
-    rank = {k: hashlib.sha1(k.encode()).hexdigest() for k in queues}
-    left = {k: len(v) for k, v in queues.items()}
-    cells, budget = [], [200000]
+def cell_box(geo, p):
+    r, c = divmod(p, geo["cols"])
+    return [geo["x0"] + c * (TILE_W + GUTTER), TOP + r * (TILE_H + GUTTER), TILE_W, TILE_H]
 
-    def clear(i, k):
-        r, c = divmod(i, cols)
-        for dr, dc in ((0, -1), (-1, -1), (-1, 0), (-1, 1)):
-            rr, cc = r + dr, c + dc
-            if rr >= 0 and 0 <= cc < cols and cells[rr * cols + cc] == k:
-                return False
-        return True
 
-    def fill(i):
-        if i == len(slides):
-            return True
-        budget[0] -= 1
-        if budget[0] < 0:
-            return False
-        # Designers with the most slides left go first, so none is stranded at the end.
-        for k in sorted((k for k in left if left[k]), key=lambda k: (-left[k], rank[k])):
-            if clear(i, k):
-                cells.append(k)
-                left[k] -= 1
-                if fill(i + 1):
-                    return True
-                cells.pop()
-                left[k] += 1
-        return False
+def cell_of(geo, b):
+    """The grid cell a box sits on, or None if it is off the grid."""
+    if not b:
+        return None
+    c, dx = divmod(b[0] - geo["x0"], TILE_W + GUTTER)
+    r, dy = divmod(b[1] - TOP, TILE_H + GUTTER)
+    if dx or dy or not (0 <= c < geo["cols"] and 0 <= r < geo["rows"]):
+        return None
+    return r * geo["cols"] + c
 
-    apart = fill(0)
-    if not apart:  # too few designers for the grid to keep them apart
-        cells[:] = [k for k in sorted(queues, key=rank.get) for _ in queues[k]]
-    taken = {k: 0 for k in queues}
-    order = []
-    for k in cells:
-        order.append(queues[k][taken[k]])
-        taken[k] += 1
-    return order, apart
+
+def layout(slides, old, geo):
+    """A cell for every slide. A slide already on the wall keeps its cell,
+    unless the cell is off the grid or touches a slide by the same designer.
+    Every other slide takes the first open cell that touches none of its
+    designer's slides: idea 1s first, then 2s, then 3s, so a designer's slides
+    spread out. Deterministic, not random. Returns ({name: cell}, how many
+    slides had no choice but to touch)."""
+    cols, rows = geo["cols"], geo["rows"]
+    cells = [None] * (cols * rows)
+
+    def touches(p, student):
+        r, c = divmod(p, cols)
+        return any(cells[rr * cols + cc] == student
+                   for rr in range(max(r - 1, 0), min(r + 2, rows))
+                   for cc in range(max(c - 1, 0), min(c + 2, cols)) if (rr, cc) != (r, c))
+
+    at = {}
+    up = sorted((cell_of(geo, old.get(s["name"])), s["name"], s) for s in slides
+                if cell_of(geo, old.get(s["name"])) is not None)
+    for p, name, s in up:
+        if cells[p] is None and not touches(p, s["student"]):
+            cells[p] = s["student"]
+            at[name] = p
+    rank = {s["student"]: hashlib.sha1(s["student"].encode()).hexdigest() for s in slides}
+    forced = 0
+    for s in sorted((s for s in slides if s["name"] not in at),
+                    key=lambda s: (s["idea"], rank[s["student"]], s["name"])):
+        free = [p for p, k in enumerate(cells) if k is None]
+        p = next((p for p in free if not touches(p, s["student"])), None)
+        if p is None:
+            p, forced = free[0], forced + 1
+        cells[p] = s["student"]
+        at[s["name"]] = p
+    return at, forced
 
 
 def header_specs(geo, pitches, designers):
@@ -277,19 +278,15 @@ def plan(args):
     ledger = load_ledger(args.ledger)
     blur = bool(load(args.overrides, {}).get("blur", False))
     base = args.base.rstrip("/") + "/"
-    slides = manifest["slides"]
+    slides = [dict(s, name=Path(s["file"]).stem) for s in manifest["slides"]]
     total = max(MIN_TILES, len(slides))
     geo = frame_for(total)
-    order, apart = arrange(slides, geo["cols"])
-
-    def box(p):
-        r, c = divmod(p, geo["cols"])
-        return [geo["x0"] + c * (TILE_W + GUTTER), TOP + r * (TILE_H + GUTTER), TILE_W, TILE_H]
+    at, forced = layout(slides, {n: e["box"] for n, e in ledger["placed"].items()}, geo)
 
     steps = []
-    for p, s in enumerate(order):
+    for s in sorted(slides, key=lambda s: at[s["name"]]):
         src = s.get("src", s["file"])
-        step = {"name": Path(s["file"]).stem, "student": s["student"], "box": box(p),
+        step = {"name": s["name"], "student": s["student"], "box": cell_box(geo, at[s["name"]]),
                 "url": base + "slides/" + src, "sha256": digest(Path(args.slides, src)),
                 "cover_url": base + "slides/blur/" + src,
                 "cover_sha256": digest(Path(args.slides, "blur", src)) if blur else None}
@@ -301,9 +298,11 @@ def plan(args):
     removals = [{"name": n, "ids": [i for i in (e["image_id"], e["cover_id"]) if i]}
                 for n, e in ledger["placed"].items() if n not in names]
 
+    taken = set(at.values())
+    spare = [p for p in range(geo["cols"] * geo["rows"]) if p not in taken][:total - len(slides)]
     tiles = []
-    for p in range(len(slides), total):
-        t = {"label": placeholder_name(p), "box": box(p)}
+    for p in spare:
+        t = {"label": placeholder_name(p), "box": cell_box(geo, p)}
         old = ledger["tiles"].get(t["label"])
         if old is None:
             t["action"] = "create"
@@ -328,7 +327,8 @@ def plan(args):
     keys = {sp["key"] for sp in specs}
     header_removals = [{"key": k, "id": v["id"]} for k, v in ledger["header"].items()
                        if k not in keys and v.get("id")]
-    notes = [] if apart or not slides else ["too few designers to keep every designer's slides apart"]
+    notes = ([f"{forced} slide{'' if forced == 1 else 's'} had to go next to another by the same designer: "
+              "no open spot kept them apart"] if forced else [])
 
     out = Path(args.svg_dir)
     out.mkdir(exist_ok=True)
@@ -546,43 +546,72 @@ def set_blur(args):
 
 def check(args):
     rng = random.Random(405)
-    cases = [[3] * n for n in (1, 7, 21, 22, 23, 24, 25, 30)]
-    cases += [[rng.choice((1, 2, 3, 3, 3)) for _ in range(n)] for n in (6, 12, 18, 23, 26)]
     fails = []
-    for counts in cases:
-        slides = [{"student": f"s{d:02d}", "idea": i + 1} for d, c in enumerate(counts) for i in range(c)]
-        total = max(MIN_TILES, len(slides))
-        geo = frame_for(total)
-        order, apart = arrange(slides, geo["cols"])
-        again, _ = arrange(list(reversed(slides)), geo["cols"])
-        cells = {divmod(i, geo["cols"]): s["student"] for i, s in enumerate(order)}
-        touching = sum(cells.get((r + dr, c + dc)) == k for (r, c), k in cells.items()
-                       for dr in (-1, 0, 1) for dc in (-1, 0, 1) if dr or dc)
-        labels = [placeholder_name(p) for p in range(len(slides), total)]
+
+    def named(counts):
+        return [{"name": f"s{d:02d}_idea{i + 1}", "student": f"s{d:02d}", "idea": i + 1}
+                for d, c in enumerate(counts) for i in range(c)]
+
+    def run(label, slides, old, strict=True):
+        geo = frame_for(max(MIN_TILES, len(slides)))
+        at, forced = layout(slides, old, geo)
+        boxes = {n: cell_box(geo, p) for n, p in at.items()}
         bottom = TOP + geo["rows"] * (TILE_H + GUTTER) - GUTTER
-        label = f"{len(slides)} pitches by {len(counts)} designers"
-        if len(counts) >= 5 and (not apart or touching):
-            fails.append(f"{label}: {touching} touching pairs")
-        if order != again:
-            fails.append(f"{label}: layout depends on input order")
+        moved = sorted(n for n in old if n in boxes and boxes[n] != old[n])
+        if strict and forced:
+            fails.append(f"{label}: {forced} slides touch their designer's")
+        if len(set(at.values())) != len(slides) or len(at) != len(slides):
+            fails.append(f"{label}: slides missing or sharing a spot")
         if geo["w"] * 9 != geo["h"] * 16:
             fails.append(f"{label}: frame {geo['w']}x{geo['h']} is not 16:9")
-        if geo["x0"] < MARGIN or bottom > geo["h"] - MARGIN:
+        if geo["x0"] != MARGIN or bottom > geo["h"] - MARGIN:
             fails.append(f"{label}: mosaic runs past the margins")
-        if len(set(labels)) != len(labels) or len(slides) + len(labels) != total:
-            fails.append(f"{label}: placeholders do not fill the floor")
-        print(f"  {label:26} {geo['cols']:2} x {geo['rows']} grid, {len(labels):2} placeholders, "
-              f"frame {geo['w']}x{geo['h']}, {touching} touching")
+        print(f"  {label:34} {geo['cols']:2} x {geo['rows']} grid, frame {geo['w']}x{geo['h']}, "
+              f"{len(moved):2} moved, {forced} touching")
+        return geo, at, boxes, moved
+
+    # Whole walls laid out at once, in any input order.
+    cases = [[3] * n for n in (1, 7, 21, 22, 23, 24, 25, 30)]
+    cases += [[rng.choice((1, 2, 3, 3, 3)) for _ in range(n)] for n in (6, 12, 18, 23, 26)]
+    for counts in cases:
+        slides = named(counts)
+        label = f"{len(slides)} pitches by {len(counts)} designers"
+        geo, at, _, _ = run(label, slides, {})
+        if layout(list(reversed(slides)), {}, geo)[0] != at:
+            fails.append(f"{label}: layout depends on input order")
+
+    # Decks arriving over several runs: nothing already up moves, even as the wall grows.
+    pool = rng.sample(named([3] * 23), 69)
+    old = {}
+    for cut in (3, 12, 30, 45, 58, 63, 66, 69):
+        _, _, old, moved = run(f"arrivals, {cut} pitches so far", pool[:cut], old)
+        if moved:
+            fails.append(f"arrivals, {cut} pitches: {len(moved)} slides already up moved")
+
+    # Takedowns. One mid-wall moves nothing. Enough to shrink the wall moves only
+    # the slides that no longer fit, and the holes they go to can force a touch.
+    for drop in (1, 6):
+        gone = {s["name"] for s in pool[10:10 + drop]}
+        geo, _, _, moved = run(f"takedown of {drop}", [s for s in pool if s["name"] not in gone], old, False)
+        stuck = [n for n in moved if cell_of(geo, old[n]) is not None]
+        if stuck:
+            fails.append(f"takedown of {drop}: {len(stuck)} slides moved that still fit")
+
+    # One designer's slides that went up touching, placed when they were the only
+    # designer, get spread out by moving as few as possible.
+    lex = named([3])
     floor = frame_for(MIN_TILES)
+    _, _, _, moved = run("3 slides touching, one designer", lex,
+                         {s["name"]: cell_box(floor, p) for p, s in enumerate(lex)})
+    if len(moved) != 1:
+        fails.append(f"3 slides touching, one designer: {len(moved)} moved, expected 1")
     if (floor["cols"], floor["rows"], floor["w"], floor["h"]) != (9, 7, 3168, 1782):
         fails.append("the 63-tile floor is no longer 9 x 7 in a 3168x1782 frame")
-    if frame_for(69)["cols"] != 9:
-        fails.append("69 pitches no longer lay out 9 across")
 
     # What one run does to a slide and its blurred copy, case by case.
     a = {"image_id": "1", "sha256": "s", "box": [0, 0, 1, 1], "cover_id": "2", "cover_sha256": "c"}
     bare = dict(a, cover_id=None, cover_sha256=None)
-    for label, old, blur, want in [
+    for label, old_, blur, want in [
             ("new slide", None, True, ("place", "create", [])),
             ("nothing changed", a, True, ("keep", "keep", [])),
             ("the reveal", a, False, ("keep", "remove", ["2"])),
@@ -591,7 +620,7 @@ def check(args):
             ("copy re-rendered", dict(a, cover_sha256="old"), True, ("keep", "rebuild", ["2"])),
             ("slide re-rendered, blur off", dict(bare, sha256="old"), False, ("rebuild", "none", ["1"])),
             ("placed as a blurred twin", dict(bare, sha256=None), True, ("rebuild", "create", ["1"]))]:
-        got = slide_actions(old, [0, 0, 1, 1], "s", "c", blur)
+        got = slide_actions(old_, [0, 0, 1, 1], "s", "c", blur)
         if got != want:
             fails.append(f"blur, {label}: {got}, expected {want}")
 
@@ -599,7 +628,8 @@ def check(args):
         print("FAIL:", f)
     if fails:
         sys.exit(f"{len(fails)} checks failed.")
-    print("layout: every case 16:9, inside the margins, floor filled, no designer touching their own slides.")
+    print("layout: every wall 16:9 on the same left margin and top, slides already up stay put, "
+          "no designer touching their own slides.")
     print("blur: new, unchanged, revealed, re-blurred, moved and re-rendered slides all plan right.")
 
 

@@ -81,9 +81,11 @@ cd idea-wall
 python3 tools/place_slides.py
 ```
 
-It works out the whole wall from the manifest: the grid, a 16:9 frame, where
-each slide goes, the placeholder tiles that keep the wall at 63 or more, and
-the counters. It writes `placement_plan.json` and the SVG steps in
+It works out the whole wall from the manifest and the ledger: the grid, a 16:9
+frame, a spot for each new slide, the placeholder tiles that keep the wall at
+63 or more, and the counters. A slide already on the wall keeps its spot. Past
+63 the wall grows a column on the right and rows at the bottom, so the left
+edge and the top never move. It writes `placement_plan.json` and the SVG steps in
 `placement_svg/`. Send the steps through the claude.ai Miro connector's
 `canvas_update_from_svg`, one call at a time, in the order the script prints.
 Calls sent side by side race on the frame. The plugin Miro connector is signed
@@ -132,8 +134,9 @@ for frames is no help, since it shows the owner, and the TV, a grey panel.
 The counters are text. Miro cannot count on its own, so the placement step
 rewrites them from the manifest on every run, and `record` reads them back.
 
-`python3 tools/place_slides.py check` runs the layout against many wall sizes:
-every frame 16:9, every slide inside the margins, no designer's slides touching.
+`python3 tools/place_slides.py check` runs the layout against many wall sizes
+and against decks arriving over several runs: every frame 16:9, every slide
+inside the margins, no slide already up moving, no designer's slides touching.
 Run it after any change to the script.
 
 ## Known state, September 11 2026

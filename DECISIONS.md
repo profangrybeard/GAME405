@@ -55,15 +55,24 @@ slides.
 
 **Shuffled placement, not grouped by designer.** Tim's reason: grouping puts a
 designer's three slides adjacent, and since they share a deck background that
-produces visible color blocks. The placement step works out an order in which
-no designer's slides touch, diagonals included, for any number of pitches. It is
+produces visible color blocks. A new slide takes the first open spot where it
+touches none of its designer's slides, diagonals included. It is
 deterministic: the same slides always give the same wall. Do not replace it
 with a random shuffle; random reintroduces the adjacency.
 
-**Grid geometry.** Tiles 320x180 with a 16px gutter. The column count is chosen
-on every run so the frame stays exactly 16:9, and presenting it fills a
-classroom TV with no letterboxing. 69 pitches lay out 9 across and 8 down. Last
-row is ragged and deliberately not centered.
+**Slides already on the wall stay put.** Tim, September 11: "keep existing
+slides in place." Decks arrive over several runs, and working out the whole
+order again on every run moved dozens of slides, each one a delete and a remake
+for Tim's OK. Now a slide keeps its spot once it is up. The one exception is a
+slide touching another by the same designer, which moves once. Lex Broughton's
+three went up touching when Lex was the only designer.
+
+**Grid geometry.** Tiles 320x180 with a 16px gutter, and the frame stays
+exactly 16:9, so presenting it fills a classroom TV with no letterboxing. The
+grid starts at the same left margin and top at every size: 63 tiles lay out 9
+across and 7 down, and 64 to 80 go 10 across in a wider frame. The wall grows
+a column on the right and rows at the bottom, so nothing already up has to
+move. The newest column or row is ragged and deliberately not centered.
 
 **Palette matches the GAME 405 Studio Board.** Ground #101B2A, tile #1E2E45,
 edge #2C3E56, cream #EAE6DC, slate #8FA0B6, amber #F0A93B. The wall should read

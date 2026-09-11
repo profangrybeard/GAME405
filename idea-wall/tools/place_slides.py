@@ -19,8 +19,14 @@ run. The frame always stays 16:9 so it fills the classroom TV, and no
 designer's slides touch, diagonals included.
 
 With blur on, every slide shows as its blurred twin from slides/blur/, so the
-wall suggests its contents without giving them away. Turning it off swaps the
-sharp slides back in on the next run.
+wall suggests its contents without giving them away.
+
+Miro's tools can create items inside a frame and delete them, but cannot move
+an image or a text that is already inside one, or swap an image's source. So
+nothing is ever moved: an item that is already right stays, and anything that
+has to change is deleted and made again. Miro also resizes a frame around its
+centre and leaves everything inside where it was, so every resize comes with a
+second step that lands the frame back on its origin.
 
 This script never talks to Miro. It writes placement_plan.json and the SVG
 steps in placement_svg/ for Claude to send through the Miro connector, and it
@@ -47,7 +53,8 @@ TILE_STYLE = ('rx="6" fill="#1e2e45" data-text-color="#8fa0b6" data-font-size="1
               'stroke="#2c3e56" stroke-dasharray="5,5"')
 PLACEHOLDER = re.compile(r"student\d{2}_idea\d")
 
-# Header text already on the live wall. Anything missing is created.
+# Header text already on the live wall, from the first design. Its position is
+# unknown to the ledger, so the first run rebuilds it.
 HEADER_IDS = {
     "title": "3458764683429206128", "byline": "3458764683429206129",
     "pitches": "3458764683429206130", "pitches_label": "3458764683429206131",
@@ -82,8 +89,10 @@ def load_ledger(path):
                         "box": e.get("box"), "blurred": e.get("blurred", False)}
         if "tile_id" in e:  # first ledger format: the slide sat on a placeholder tile
             tiles.setdefault(e["tile"], {"tile_id": e["tile_id"], "box": None})
+    header = {k: v if isinstance(v, dict) else {"id": v, "x": None, "y": None}
+              for k, v in ledger.get("header", HEADER_IDS).items()}
     return {"frame_id": ledger.get("frame_id", WALL_FRAME), "origin": ledger.get("origin", [0, 0]),
-            "frame": ledger.get("frame", [3168, 1782]), "header": ledger.get("header", dict(HEADER_IDS)),
+            "frame": ledger.get("frame", [3168, 1782]), "header": header,
             "placed": placed, "tiles": tiles}
 
 
@@ -179,37 +188,38 @@ def header_specs(geo, pitches, designers):
 
 # ---------- SVG ----------
 
-def frame_open(ledger, w, h):
-    ox, oy = ledger["origin"]
+def num(v):
+    return f"{v:g}"
+
+
+def frame_svg(frame_id, at, w, h, items):
     return ('<svg xmlns="http://www.w3.org/2000/svg">\n'
-            f'<g data-miro-id="{ledger["frame_id"]}" transform="translate({ox},{oy})" data-frame="">\n'
-            f'<rect data-type="frame" x="0" y="0" width="{w}" height="{h}" />\n')
-
-
-FRAME_CLOSE = "</g>\n</svg>\n"
+            f'<g data-miro-id="{frame_id}" transform="translate({num(at[0])},{num(at[1])})" data-frame="">\n'
+            f'<rect data-type="frame" x="0" y="0" width="{w}" height="{h}" />\n'
+            + "".join(items) + "</g>\n</svg>\n")
 
 
 def image_el(s):
     x, y, w, h = s["box"]
-    if s["action"] in ("place", "replace"):
-        return f'<image id="{s["name"]}" data-type="image" href="{s["url"]}" x="{x}" y="{y}" width="{w}" height="{h}" />\n'
-    href = f' href="{s["url"]}"' if s.get("swap") else ""
-    return f'<image data-miro-id="{s["image_id"]}" data-type="image"{href} x="{x}" y="{y}" width="{w}" height="{h}" />\n'
+    return f'<image id="{s["name"]}" data-type="image" href="{s["url"]}" x="{x}" y="{y}" width="{w}" height="{h}" />\n'
 
 
 def tile_el(t):
     x, y, w, h = t["box"]
-    if t["action"] == "create":
-        return f'<rect id="{t["label"]}" x="{x}" y="{y}" width="{w}" height="{h}" data-content="{t["label"]}" {TILE_STYLE} />\n'
-    return f'<rect data-miro-id="{t["tile_id"]}" x="{x}" y="{y}" width="{w}" height="{h}" data-content="{t["label"]}" />\n'
+    return (f'<rect id="{t["label"]}" x="{x}" y="{y}" width="{w}" height="{h}" '
+            f'data-content="{t["label"]}" {TILE_STYLE} />\n')
 
 
-def text_el(sp, ids):
-    ident = f'data-miro-id="{ids[sp["key"]]}"' if ids.get(sp["key"]) else f'id="{sp["key"]}"'
+def text_el(sp):
+    ident = f'data-miro-id="{sp["id"]}"' if sp["action"] == "keep" else f'id="{sp["key"]}"'
     weight = ' font-weight="bold"' if sp["bold"] else ""
     return (f'<textArea {ident} x="{sp["x"]}" y="{sp["y"]}" width="{sp["width"]}" fill="{sp["color"]}" '
             f'font-family="plex_sans" font-size="{sp["size"]}" text-align="{sp["align"]}"{weight}>'
             f'{sp["body"]}</textArea>\n')
+
+
+def delete_el(tag, item_id):
+    return f'<{tag} data-miro-id="{item_id}" data-deleted="true" />\n'
 
 
 # ---------- commands ----------
@@ -239,12 +249,10 @@ def plan(args):
         old = ledger["placed"].get(step["name"])
         if old is None:
             step["action"] = "place"
-        elif old["sha256"] != step["sha256"]:
-            step.update(action="replace", old_image_id=old["image_id"])
-        elif old["box"] != step["box"] or old["blurred"] != blur:
-            step.update(action="update", image_id=old["image_id"], swap=old["blurred"] != blur)
-        else:
+        elif (old["sha256"], old["box"], old["blurred"]) == (step["sha256"], step["box"], blur):
             step.update(action="keep", image_id=old["image_id"])
+        else:
+            step.update(action="rebuild", old_image_id=old["image_id"])
         steps.append(step)
     names = {s["name"] for s in steps}
     removals = [{"name": n, "image_id": e["image_id"]} for n, e in ledger["placed"].items() if n not in names]
@@ -255,65 +263,90 @@ def plan(args):
         old = ledger["tiles"].get(t["label"])
         if old is None:
             t["action"] = "create"
-        elif old["box"] != t["box"]:
-            t.update(action="move", tile_id=old["tile_id"])
-        else:
+        elif old["box"] == t["box"]:
             t.update(action="keep", tile_id=old["tile_id"])
+        else:
+            t.update(action="rebuild", old_tile_id=old["tile_id"])
         tiles.append(t)
     labels = {t["label"] for t in tiles}
     tile_removals = [{"label": l, "tile_id": e["tile_id"]} for l, e in ledger["tiles"].items() if l not in labels]
 
     pitches, designers = len(steps), len({s["student"] for s in steps})
     specs = header_specs(geo, pitches, designers)
+    for sp in specs:
+        old = ledger["header"].get(sp["key"])
+        if not old or not old.get("id"):
+            sp["action"] = "create"
+        elif (old["x"], old["y"]) == (sp["x"], sp["y"]):
+            sp.update(action="keep", id=old["id"])  # a text body can be updated in place
+        else:
+            sp.update(action="rebuild", old_id=old["id"])
+    keys = {sp["key"] for sp in specs}
+    header_removals = [{"key": k, "id": v["id"]} for k, v in ledger["header"].items()
+                       if k not in keys and v.get("id")]
     notes = [] if apart or not slides else ["too few designers to keep every designer's slides apart"]
 
-    # Grow the frame to cover both layouts first, place and move, then settle it.
-    ow, oh = ledger["frame"]
-    uw, uh = max(ow, geo["w"]), max(oh, geo["h"])
     out = Path(args.svg_dir)
     out.mkdir(exist_ok=True)
     for f in out.glob("*.svg"):
         f.unlink()
     files = []
+    fid, origin = ledger["frame_id"], ledger["origin"]
+    ow, oh = ledger["frame"]
+    uw, uh = max(ow, geo["w"]), max(oh, geo["h"])
 
-    def write(fname, items, w=uw, h=uh):
-        (out / fname).write_text(frame_open(ledger, w, h) + "".join(items) + FRAME_CLOSE,
-                                 encoding="utf-8", newline="\n")
+    def write(fname, items, w, h, at=origin):
+        (out / fname).write_text(frame_svg(fid, at, w, h, items), encoding="utf-8", newline="\n")
         files.append(f"{out.name}/{fname}")
 
+    # A grow lands off-centre, so the same step is sent twice: resize, then pin.
     if (uw, uh) != (ow, oh):
-        write("1_grow.svg", [])
-    routine = [s for s in steps if s["action"] in ("place", "update")]
-    for i in range(0, len(routine), CHUNK):
-        write(f"2_images_{i // CHUNK + 1:02d}.svg", [image_el(s) for s in routine[i:i + CHUNK]])
-    moving = [t for t in tiles if t["action"] in ("create", "move")]
-    if moving:
-        write("3_tiles.svg", [tile_el(t) for t in moving])
-    replaces = [s for s in steps if s["action"] == "replace"]
+        write("1_grow_1_resize.svg", [], uw, uh)
+        write("1_grow_2_pin.svg", [], uw, uh)
+    new_imgs = [s for s in steps if s["action"] == "place"]
+    for i in range(0, len(new_imgs), CHUNK):
+        write(f"2_images_{i // CHUNK + 1:02d}.svg", [image_el(s) for s in new_imgs[i:i + CHUNK]], uw, uh)
+    new_tiles = [t for t in tiles if t["action"] == "create"]
+    if new_tiles:
+        write("3_tiles.svg", [tile_el(t) for t in new_tiles], uw, uh)
+    re_imgs = [s for s in steps if s["action"] == "rebuild"]
+    re_tiles = [t for t in tiles if t["action"] == "rebuild"]
+    re_texts = [sp for sp in specs if sp["action"] == "rebuild"]
+    deletes = ([delete_el("image", e["image_id"]) for e in removals] +
+               [delete_el("image", s["old_image_id"]) for s in re_imgs] +
+               [delete_el("rect", e["tile_id"]) for e in tile_removals] +
+               [delete_el("rect", t["old_tile_id"]) for t in re_tiles] +
+               [delete_el("textArea", sp["old_id"]) for sp in re_texts] +
+               [delete_el("textArea", e["id"]) for e in header_removals])
     needs_ok = None
-    if removals or replaces or tile_removals:
+    if deletes:
         needs_ok = f"{out.name}/4_needs_ok.svg"
-        write("4_needs_ok.svg",
-              [f'<image data-miro-id="{e["image_id"]}" data-deleted="true" />\n' for e in removals] +
-              [f'<image data-miro-id="{s["old_image_id"]}" data-deleted="true" />\n' for s in replaces] +
-              [image_el(s) for s in replaces] +
-              [f'<rect data-miro-id="{e["tile_id"]}" data-deleted="true" />\n' for e in tile_removals])
-    write("5_finish.svg", [text_el(sp, ledger["header"]) for sp in specs], geo["w"], geo["h"])
+        write("4_needs_ok.svg", deletes + [image_el(s) for s in re_imgs] + [tile_el(t) for t in re_tiles],
+              uw, uh)
+    # A shrink also resizes around the centre, so move the frame up and left by
+    # half the difference first, and the resize lands on the origin.
+    if (geo["w"], geo["h"]) != (uw, uh):
+        dx, dy = (uw - geo["w"]) / 2, (uh - geo["h"]) / 2
+        write("5_shrink_1_move.svg", [], uw, uh, [origin[0] - dx, origin[1] - dy])
+        write("5_shrink_2_resize.svg", [], geo["w"], geo["h"])
+    write("6_header.svg", [text_el(sp) for sp in specs], geo["w"], geo["h"])
 
-    save(args.plan, {"frame_id": ledger["frame_id"], "origin": ledger["origin"],
-                     "frame": [geo["w"], geo["h"]], "cols": geo["cols"], "rows": geo["rows"],
-                     "pitches": pitches, "designers": designers, "blur": blur, "steps": steps,
-                     "removals": removals, "tiles": tiles, "tile_removals": tile_removals,
-                     "header": specs, "notes": notes, "svg": files, "needs_ok": needs_ok})
+    save(args.plan, {"frame_id": fid, "origin": origin, "frame": [geo["w"], geo["h"]],
+                     "cols": geo["cols"], "rows": geo["rows"], "pitches": pitches,
+                     "designers": designers, "blur": blur, "steps": steps, "removals": removals,
+                     "tiles": tiles, "tile_removals": tile_removals, "header": specs,
+                     "header_removals": header_removals, "notes": notes, "svg": files,
+                     "needs_ok": needs_ok})
 
     tally = lambda items, acts: ", ".join(f"{a} {sum(i['action'] == a for i in items)}" for a in acts)
     print(f"wall: {pitches} pitches by {designers} designers, {len(tiles)} placeholders, "
           f"{geo['cols']} x {geo['rows']} grid, frame {geo['w']}x{geo['h']}, blur {'on' if blur else 'off'}")
-    print(f"  slides: {tally(steps, ('place', 'update', 'keep', 'replace'))}, remove {len(removals)}")
-    print(f"  placeholders: {tally(tiles, ('create', 'move', 'keep'))}, remove {len(tile_removals)}")
-    print("SVG steps, in order:")
+    print(f"  slides: {tally(steps, ('place', 'keep', 'rebuild'))}, remove {len(removals)}")
+    print(f"  placeholders: {tally(tiles, ('create', 'keep', 'rebuild'))}, remove {len(tile_removals)}")
+    print(f"  header: {tally(specs, ('create', 'keep', 'rebuild'))}")
+    print("SVG steps. Send them one at a time, in this order:")
     for f in files:
-        print(f"  {f}" + ("   <- deletes, needs Tim's OK" if f == needs_ok else ""))
+        print(f"  {f}" + ("   <- deletes, needs Tim's OK. If he declines, stop and re-plan." if f == needs_ok else ""))
     for n in notes:
         print("NOTE:", n)
 
@@ -323,14 +356,17 @@ def attrs(s):
 
 
 def read_frame(path):
+    from html import unescape  # the canvas read-back escapes rich text: <b> comes back as &lt;b&gt;
     svg = Path(path).read_text(encoding="utf-8")
+    g = re.search(r'<g\b[^>]*transform="translate\(([-\d.]+),\s*([-\d.]+)\)"', svg)
     rects = [attrs(a) for a in re.findall(r"<rect\b([^>]*)>", svg)]
     frame = next(r for r in rects if r.get("data-type") == "frame")
     shapes = [r for r in rects if r.get("data-type") != "frame"]
     images = [attrs(a) for a in re.findall(r"<image\b([^>]*?)/?>", svg)]
-    texts = [(attrs(a), re.sub(r"<[^>]+>", "", body).strip())
+    texts = [(attrs(a), re.sub(r"<[^>]+>", "", unescape(body)).strip())
              for a, body in re.findall(r"<textArea\b([^>]*)>(.*?)</textArea>", svg, re.S)]
-    return frame, shapes, images, texts
+    origin = [float(g.group(1)), float(g.group(2))] if g else None
+    return origin, frame, shapes, images, texts
 
 
 def at(a):
@@ -341,7 +377,7 @@ def record(args):
     """Check a read-back of the frame against the plan, then update the ledger."""
     plan_ = load(args.plan)
     ledger = load_ledger(args.ledger)
-    frame, shapes, images, texts = read_frame(args.file)
+    origin, frame, shapes, images, texts = read_frame(args.file)
     problems = []
 
     img_at, img_ids = {}, {im["data-miro-id"] for im in images}
@@ -350,19 +386,19 @@ def record(args):
     placed = {}
     for s in plan_["steps"]:
         here = img_at.pop(tuple(s["box"][:2]), [])
-        stale = s["action"] == "replace" and here == [s["old_image_id"]]
+        stale = s["action"] == "rebuild" and here == [s["old_image_id"]]
         if len(here) == 1 and not stale:
             placed[s["name"]] = {"image_id": here[0], "sha256": s["sha256"], "box": s["box"],
                                  "blurred": s["blurred"]}
             continue
-        problems.append(f"{s['name']}: " + ("replace not applied" if stale else
+        problems.append(f"{s['name']}: " + ("rebuild not applied" if stale else
                                             f"{len(here)} images at {s['box'][0]},{s['box'][1]}"))
         if s["name"] in ledger["placed"]:
             placed[s["name"]] = ledger["placed"][s["name"]]
     for name, old in ledger["placed"].items():
         if name not in placed and old["image_id"] in img_ids:
             placed[name] = old
-            problems.append(f"{name}: still on the wall, removal not applied")
+            problems.append(f"{name}: old image still on the wall")
     known = {e["image_id"] for e in placed.values()}
     problems += [f"unplanned image at {x},{y}" for (x, y), ids in img_at.items() for i in ids if i not in known]
 
@@ -372,33 +408,47 @@ def record(args):
     tiles = {}
     for t in plan_["tiles"]:
         here = shp_at.pop(tuple(t["box"][:2]), [])
-        if len(here) == 1 and here[0].get("data-content") == t["label"]:
+        stale = t["action"] == "rebuild" and [h["data-miro-id"] for h in here] == [t["old_tile_id"]]
+        if len(here) == 1 and here[0].get("data-content") == t["label"] and not stale:
             tiles[t["label"]] = {"tile_id": here[0]["data-miro-id"], "box": t["box"]}
             continue
-        problems.append(f"placeholder {t['label']}: {len(here)} tiles at {t['box'][0]},{t['box'][1]}")
+        problems.append(f"placeholder {t['label']}: " + ("rebuild not applied" if stale else
+                                                          f"{len(here)} tiles at {t['box'][0]},{t['box'][1]}"))
         if t["label"] in ledger["tiles"]:
             tiles[t["label"]] = ledger["tiles"][t["label"]]
     for label, old in ledger["tiles"].items():
         if label not in tiles and old["tile_id"] in shp_ids:
             tiles[label] = old
-            problems.append(f"placeholder {label}: still on the wall, removal not applied")
+            problems.append(f"placeholder {label}: old tile still on the wall")
     known = {e["tile_id"] for e in tiles.values()}
     problems += [f"unplanned shape at {x},{y}" for (x, y), shs in shp_at.items()
                  for sh in shs if sh["data-miro-id"] not in known]
 
-    header = dict(ledger["header"])
+    header, matched = {}, set()
     for sp in plan_["header"]:
         hit = [(a, body) for a, body in texts
                if abs(at(a)[0] - sp["x"]) <= 3 and abs(at(a)[1] - sp["y"]) <= 3]
-        want = re.sub(r"<[^>]+>", "", sp["body"])
+        old = ledger["header"].get(sp["key"])
         if len(hit) != 1:
             problems.append(f"header {sp['key']}: {len(hit)} texts at {sp['x']},{sp['y']}")
+            if old:
+                header[sp["key"]] = old
             continue
-        header[sp["key"]] = hit[0][0]["data-miro-id"]
+        tid = hit[0][0]["data-miro-id"]
+        matched.add(tid)
+        if sp["action"] == "rebuild" and tid == sp["old_id"]:
+            problems.append(f"header {sp['key']}: rebuild not applied")
+        header[sp["key"]] = {"id": tid, "x": sp["x"], "y": sp["y"]}
+        want = re.sub(r"<[^>]+>", "", sp["body"])
         if hit[0][1] != want:
             problems.append(f"header {sp['key']} reads {hit[0][1]!r}, expected {want!r}")
+    problems += [f"unplanned text {body!r} at {at(a)[0]},{at(a)[1]}" for a, body in texts
+                 if a["data-miro-id"] not in matched]
+
     if [round(float(frame["width"])), round(float(frame["height"]))] != plan_["frame"]:
         problems.append(f"frame is {frame['width']}x{frame['height']}, expected {plan_['frame']}")
+    if origin is not None and [round(v) for v in origin] != [round(v) for v in plan_["origin"]]:
+        problems.append(f"frame sits at {origin}, expected {plan_['origin']}")
 
     save(args.ledger, {"frame_id": plan_["frame_id"], "origin": plan_["origin"], "frame": plan_["frame"],
                        "header": header, "placed": placed, "tiles": tiles})
@@ -413,7 +463,7 @@ def record(args):
 def adopt(args):
     """Take placeholder tiles already on the frame into the ledger, by label."""
     ledger = load_ledger(args.ledger)
-    _, shapes, _, _ = read_frame(args.file)
+    _, _, shapes, _, _ = read_frame(args.file)
     found = 0
     for sh in shapes:
         if PLACEHOLDER.fullmatch(sh.get("data-content", "")):

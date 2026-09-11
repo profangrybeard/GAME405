@@ -84,18 +84,37 @@ python3 tools/place_slides.py
 It works out the whole wall from the manifest: the grid, a 16:9 frame, where
 each slide goes, the placeholder tiles that keep the wall at 63 or more, and
 the counters. It writes `placement_plan.json` and the SVG steps in
-`placement_svg/`. Send each step, in file order, through the claude.ai Miro
-connector's `canvas_update_from_svg`. The plugin Miro connector is signed into
-a different org and cannot see this board.
+`placement_svg/`. Send the steps through the claude.ai Miro connector's
+`canvas_update_from_svg`, one call at a time, in the order the script prints.
+Calls sent side by side race on the frame. The plugin Miro connector is signed
+into a different org and cannot see this board.
 
-- `4_needs_ok.svg` deletes: a slide that was pulled, the old copy of one that
-  changed, or placeholder tiles that slides have taken over. Show Tim the list
-  and send it only with his OK.
+Miro will not move or re-point an image inside a frame, and ignores position
+changes to text inside one. So an item that is already right is kept, and
+anything that has to change is deleted and created again in its new place.
+
+- `1_grow_1_resize.svg`, then `1_grow_2_pin.svg`. Only when the wall grows.
+  Miro resizes a frame around its center, so the second call pins it back.
+- `2_images_NN.svg` and `3_tiles.svg`: new slides and new placeholder tiles.
+- `4_needs_ok.svg` deletes the old copy of everything that changed and creates
+  it again: a slide that moved or swapped blur, a placeholder that moved or
+  that a slide took over, a pulled slide, header text that moved. Show Tim the
+  list and send it only with Tim's OK. On a no, stop and re-plan. The later
+  steps assume it went through.
+- `5_shrink_1_move.svg`, then `5_shrink_2_resize.svg`. Only when the wall
+  shrinks. The frame moves by half the difference first, so the resize lands it
+  back on its corner.
+- `6_header.svg`: title, byline, and counters.
 - Then read the wall frame back with `canvas_read_as_svg` (widget
   `3458764683429206119`), save the SVG to `placement_read.svg`, and run
   `python3 tools/place_slides.py record placement_read.svg`. It checks that
-  every slide and placeholder sits exactly on its box, nothing is doubled, and
-  the header reads right, then updates `placements.json`. Commit that file.
+  every slide and placeholder sits exactly on its box, nothing is doubled,
+  nothing old was left behind, and the header reads right, then updates
+  `placements.json`. Commit that file.
+
+`place_slides.py adopt placement_read.svg` teaches the ledger about placeholder
+tiles it did not create. It was run once, for the switch from the hand-built
+wall.
 
 `python3 tools/place_slides.py blur on` makes the next run show every slide as
 its blurred twin from `slides/blur/`, and `blur off` swaps the sharp slides

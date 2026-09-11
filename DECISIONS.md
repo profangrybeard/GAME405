@@ -162,6 +162,14 @@ byline reads "Every idea this room pitched. **Nothing** thrown away.", with
 he is listed in `overrides.json` under `extra_students` until he is. With him
 the roster is 23, and 69 pitches if everyone delivers three.
 
+**Anything that changes on the wall is rebuilt, not edited.** Found on a
+rehearsal frame on September 11: Miro refuses to move or re-point an image
+inside a frame, and ignores position changes to text inside one. So the
+placement step keeps what is already right and deletes and recreates the rest,
+and any run that moves something has a deletes step for Tim's OK. The rehearsal
+took a wall of 30 blurred slides and 33 placeholders to 69 sharp slides this
+way, grew the frame to fit, and the read-back matched the plan exactly.
+
 ---
 
 ## Rejected. Do not re-propose.

@@ -132,8 +132,10 @@ the placement loop in CLAUDE.md.
   under it counts designers with at least one, and JAM TEAMS and PRODUCTION
   stay 5 and 2.
 
-Each run sorts every slide into place, move, keep, replace or remove. Replace
-and remove delete an image from the board, so they need Tim's OK.
+Each run sorts every slide, placeholder, and header line into place, keep,
+rebuild, or remove. Miro cannot move an image inside a frame, so anything that
+changes is rebuilt: the old copy is deleted and a new one created where it now
+belongs. Rebuild and remove delete from the board, so they need Tim's OK.
 
 `placements.json` is the ledger of what is on the wall: each slide's image, its
 box, and a hash of the file it came from. It is committed. Running the plan

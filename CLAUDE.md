@@ -95,30 +95,39 @@ anything that has to change is deleted and created again in its new place.
 
 - `1_grow_1_resize.svg`, then `1_grow_2_pin.svg`. Only when the wall grows.
   Miro resizes a frame around its center, so the second call pins it back.
-- `2_images_NN.svg` and `3_tiles.svg`: new slides and new placeholder tiles.
-- `4_needs_ok.svg` deletes the old copy of everything that changed and creates
-  it again: a slide that moved or swapped blur, a placeholder that moved or
-  that a slide took over, a pulled slide, header text that moved. Show Tim the
-  list and send it only with Tim's OK. On a no, stop and re-plan. The later
-  steps assume it went through.
-- `5_shrink_1_move.svg`, then `5_shrink_2_resize.svg`. Only when the wall
+- `2_images_NN.svg`: new slides.
+- `3_covers_NN.svg`: blurred copies over those new slides, when blur is on.
+  Miro stacks items in the order they were made, so a copy always goes in a
+  later call than its slide, never the same one.
+- `4_tiles.svg`: new placeholder tiles.
+- `5_needs_ok.svg` deletes the old version of everything that changed and
+  creates it again: a slide that moved, a placeholder that moved or that a
+  slide took over, a pulled slide, header text that moved, and the blurred
+  copies when blur goes off, which is the reveal. Show Tim the list and send it
+  only with Tim's OK. On a no, stop and re-plan. The later steps assume it went
+  through.
+- `6_covers_NN.svg`: blurred copies over the slides made again in step 5, and
+  over every slide when blur goes back on.
+- `7_shrink_1_move.svg`, then `7_shrink_2_resize.svg`. Only when the wall
   shrinks. The frame moves by half the difference first, so the resize lands it
   back on its corner.
-- `6_header.svg`: title, byline, and counters.
+- `8_header.svg`: title, byline, and counters.
 - Then read the wall frame back with `canvas_read_as_svg` (widget
   `3458764683429206119`), save the SVG to `placement_read.svg`, and run
   `python3 tools/place_slides.py record placement_read.svg`. It checks that
-  every slide and placeholder sits exactly on its box, nothing is doubled,
-  nothing old was left behind, and the header reads right, then updates
-  `placements.json`. Commit that file.
+  every slide and placeholder sits exactly on its box, every blurred copy sits
+  on top of its slide, nothing is doubled, nothing old was left behind, and the
+  header reads right, then updates `placements.json`. Commit that file.
 
 `place_slides.py adopt placement_read.svg` teaches the ledger about placeholder
 tiles it did not create. It was run once, for the switch from the hand-built
 wall.
 
-`python3 tools/place_slides.py blur on` makes the next run show every slide as
-its blurred twin from `slides/blur/`, and `blur off` swaps the sharp slides
-back. Flipping it is a run of this loop, not an instant switch inside Miro.
+Miro has no blur or filter for images. `python3 tools/place_slides.py blur on`
+makes the next run lay a blurred copy from `slides/blur/` over every slide, and
+`blur off` makes it delete the copies, which is the reveal: the sharp slides
+were underneath all along. Flipping it is a run of this loop. Miro's own hide
+for frames is no help, since it shows the owner, and the TV, a grey panel.
 
 The counters are text. Miro cannot count on its own, so the placement step
 rewrites them from the manifest on every run, and `record` reads them back.

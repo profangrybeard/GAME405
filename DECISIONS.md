@@ -138,9 +138,15 @@ who delivers one or two pitches gets one or two tiles. This replaces the fixed
 
 **Blur is a switch for demos.** Tim: "give me a filter toggle that blurs the
 board slides so I can present a semi populated board with a suggestion of
-slides but the contents is blurred until I flip the switch." Miro cannot blur
-an image, so the renderer publishes a blurred twin of every slide, and
-`place_slides.py blur on|off` swaps the wall between the two on the next run.
+slides but the contents is blurred until I flip the switch." Miro has no blur
+or filter for images, in its editor or its API, so the renderer publishes a
+blurred copy of every slide and the placement step lays it over the slide. The
+reveal deletes the copies, and the sharp slides were underneath all along. The
+first version swapped the copies in for the slides, which made every flip a
+rebuild of the whole wall. Miro's own hide and reveal for frames was tested on
+September 11 and does not work here: the owner sees a grey "Hidden for now"
+panel in place of a hidden frame, and the classroom TV is signed in as the
+owner.
 
 **The counters are real.** Tim: "the 69 count being placed text is concerning.
 I want a real counter up there." PITCHED counts delivered pitches, "in case some

@@ -120,10 +120,11 @@ the placement loop in CLAUDE.md.
   Until enough pitches arrive, placeholder tiles fill the rest under the names
   the wall has always had, so it can be demoed any time. Past 63 it grows with
   the pitches, and a fourth idea gets a tile like any other.
-- **Blur is a switch.** `python3 tools/place_slides.py blur on` shows every
-  slide as its blurred twin from `slides/blur/` on the next run, so the wall
-  suggests its contents without giving them away. `blur off` brings the sharp
-  slides back.
+- **Blur is a switch.** `python3 tools/place_slides.py blur on` lays a blurred
+  copy from `slides/blur/` over every slide on the next run, so the wall
+  suggests its contents without giving them away. `blur off` deletes the
+  copies, and the sharp slides are already underneath. Miro has no blur of its
+  own.
 - **The frame is always 16:9**, so presenting it fills the classroom TV. The
   grid is chosen to fit: 69 pitches lay out 9 across and 8 down.
 - **No designer's slides touch**, diagonals included. The order is worked out,

@@ -6,8 +6,8 @@ Usage:
     python3 tools/place_slides.py               # plan, and write the SVG steps
     python3 tools/place_slides.py record FILE   # check a read-back of the frame, update the ledger
     python3 tools/place_slides.py adopt FILE    # take over placeholder tiles already on the frame
-    python3 tools/place_slides.py blur on|off   # show blurred slides until the reveal
-    python3 tools/place_slides.py check         # layout self-check
+    python3 tools/place_slides.py blur on|off   # lay blurred copies over the slides until the reveal
+    python3 tools/place_slides.py check         # layout and blur self-check
 
 Run it from idea-wall/ after the render loop is done, pushed, and verified.
 
@@ -18,8 +18,11 @@ pitches. The grid, the frame and the counters are worked out again on every
 run. The frame always stays 16:9 so it fills the classroom TV, and no
 designer's slides touch, diagonals included.
 
-With blur on, every slide shows as its blurred twin from slides/blur/, so the
-wall suggests its contents without giving them away.
+Miro has no blur or filter for images. With blur on, a blurred copy of every
+slide from slides/blur/ sits on top of it, so the wall suggests its contents
+without giving them away. The reveal deletes the copies, and the sharp slides
+are already underneath. Miro stacks items in the order they were made, across
+frames, so a copy is always made in a later step than its slide.
 
 Miro's tools can create items inside a frame and delete them, but cannot move
 an image or a text that is already inside one, or swap an image's source. So
@@ -81,12 +84,21 @@ def save(path, data):
     Path(path).write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
+def digest(path):
+    """Hash of a published file, so a re-rendered slide gets placed again."""
+    if not path.exists():
+        sys.exit(f"{path} is missing. The render loop makes it, so run that first.")
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def load_ledger(path):
     ledger = load(path, {})
     placed, tiles = {}, dict(ledger.get("tiles", {}))
     for name, e in ledger.get("placed", {}).items():
-        placed[name] = {"image_id": e["image_id"], "sha256": e["sha256"],
-                        "box": e.get("box"), "blurred": e.get("blurred", False)}
+        placed[name] = {"image_id": e["image_id"], "box": e.get("box"),
+                        # Placed as its blurred twin, before the copies went on top: make it again, sharp.
+                        "sha256": None if e.get("blurred") else e["sha256"],
+                        "cover_id": e.get("cover_id"), "cover_sha256": e.get("cover_sha256")}
         if "tile_id" in e:  # first ledger format: the slide sat on a placeholder tile
             tiles.setdefault(e["tile"], {"tile_id": e["tile_id"], "box": None})
     header = {k: v if isinstance(v, dict) else {"id": v, "x": None, "y": None}
@@ -94,6 +106,32 @@ def load_ledger(path):
     return {"frame_id": ledger.get("frame_id", WALL_FRAME), "origin": ledger.get("origin", [0, 0]),
             "frame": ledger.get("frame", [3168, 1782]), "header": header,
             "placed": placed, "tiles": tiles}
+
+
+def slide_actions(old, box, sha, cover_sha, blur):
+    """What a run does to one slide and its blurred copy: (slide, copy, ids to delete).
+    A copy has to be made after its slide to sit on top of it, so a slide that
+    is made again always gets a new copy."""
+    gone = []
+    if old is None:
+        act = "place"
+    elif (old["sha256"], old["box"]) == (sha, box):
+        act = "keep"
+    else:
+        act = "rebuild"
+        gone.append(old["image_id"])
+    had = old.get("cover_id") if old else None
+    if not blur:
+        cover = "remove" if had else "none"
+    elif not had:
+        cover = "create"
+    elif act == "keep" and old.get("cover_sha256") == cover_sha:
+        cover = "keep"
+    else:
+        cover = "rebuild"
+    if had and cover in ("remove", "rebuild"):
+        gone.append(had)
+    return act, cover, gone
 
 
 # ---------- layout ----------
@@ -199,9 +237,17 @@ def frame_svg(frame_id, at, w, h, items):
             + "".join(items) + "</g>\n</svg>\n")
 
 
-def image_el(s):
-    x, y, w, h = s["box"]
-    return f'<image id="{s["name"]}" data-type="image" href="{s["url"]}" x="{x}" y="{y}" width="{w}" height="{h}" />\n'
+def image_el(ident, url, box):
+    x, y, w, h = box
+    return f'<image id="{ident}" data-type="image" href="{url}" x="{x}" y="{y}" width="{w}" height="{h}" />\n'
+
+
+def slide_el(s):
+    return image_el(s["name"], s["url"], s["box"])
+
+
+def cover_el(s):
+    return image_el(s["name"] + "_blur", s["cover_url"], s["box"])
 
 
 def tile_el(t):
@@ -243,19 +289,17 @@ def plan(args):
     steps = []
     for p, s in enumerate(order):
         src = s.get("src", s["file"])
-        step = {"name": Path(s["file"]).stem, "student": s["student"], "box": box(p), "blurred": blur,
-                "url": base + ("slides/blur/" if blur else "slides/") + src,
-                "sha256": hashlib.sha256(Path(args.slides, src).read_bytes()).hexdigest()}
-        old = ledger["placed"].get(step["name"])
-        if old is None:
-            step["action"] = "place"
-        elif (old["sha256"], old["box"], old["blurred"]) == (step["sha256"], step["box"], blur):
-            step.update(action="keep", image_id=old["image_id"])
-        else:
-            step.update(action="rebuild", old_image_id=old["image_id"])
+        step = {"name": Path(s["file"]).stem, "student": s["student"], "box": box(p),
+                "url": base + "slides/" + src, "sha256": digest(Path(args.slides, src)),
+                "cover_url": base + "slides/blur/" + src,
+                "cover_sha256": digest(Path(args.slides, "blur", src)) if blur else None}
+        act, cover, gone = slide_actions(ledger["placed"].get(step["name"]), step["box"],
+                                         step["sha256"], step["cover_sha256"], blur)
+        step.update(action=act, cover=cover, gone=gone)
         steps.append(step)
     names = {s["name"] for s in steps}
-    removals = [{"name": n, "image_id": e["image_id"]} for n, e in ledger["placed"].items() if n not in names]
+    removals = [{"name": n, "ids": [i for i in (e["image_id"], e["cover_id"]) if i]}
+                for n, e in ledger["placed"].items() if n not in names]
 
     tiles = []
     for p in range(len(slides), total):
@@ -299,37 +343,44 @@ def plan(args):
         (out / fname).write_text(frame_svg(fid, at, w, h, items), encoding="utf-8", newline="\n")
         files.append(f"{out.name}/{fname}")
 
+    def write_chunks(prefix, items):
+        for i in range(0, len(items), CHUNK):
+            write(f"{prefix}_{i // CHUNK + 1:02d}.svg", items[i:i + CHUNK], uw, uh)
+
     # A grow lands off-centre, so the same step is sent twice: resize, then pin.
     if (uw, uh) != (ow, oh):
         write("1_grow_1_resize.svg", [], uw, uh)
         write("1_grow_2_pin.svg", [], uw, uh)
-    new_imgs = [s for s in steps if s["action"] == "place"]
-    for i in range(0, len(new_imgs), CHUNK):
-        write(f"2_images_{i // CHUNK + 1:02d}.svg", [image_el(s) for s in new_imgs[i:i + CHUNK]], uw, uh)
+    # A copy sits on top only if it is made in a later call than its slide. Copies
+    # over new slides go straight after them, so none waits uncovered on Tim's OK.
+    covers = [s for s in steps if s["cover"] in ("create", "rebuild")]
+    write_chunks("2_images", [slide_el(s) for s in steps if s["action"] == "place"])
+    write_chunks("3_covers", [cover_el(s) for s in covers if s["action"] == "place"])
     new_tiles = [t for t in tiles if t["action"] == "create"]
     if new_tiles:
-        write("3_tiles.svg", [tile_el(t) for t in new_tiles], uw, uh)
+        write("4_tiles.svg", [tile_el(t) for t in new_tiles], uw, uh)
     re_imgs = [s for s in steps if s["action"] == "rebuild"]
     re_tiles = [t for t in tiles if t["action"] == "rebuild"]
     re_texts = [sp for sp in specs if sp["action"] == "rebuild"]
-    deletes = ([delete_el("image", e["image_id"]) for e in removals] +
-               [delete_el("image", s["old_image_id"]) for s in re_imgs] +
+    deletes = ([delete_el("image", i) for e in removals for i in e["ids"]] +
+               [delete_el("image", i) for s in steps for i in s["gone"]] +
                [delete_el("rect", e["tile_id"]) for e in tile_removals] +
                [delete_el("rect", t["old_tile_id"]) for t in re_tiles] +
                [delete_el("textArea", sp["old_id"]) for sp in re_texts] +
                [delete_el("textArea", e["id"]) for e in header_removals])
     needs_ok = None
     if deletes:
-        needs_ok = f"{out.name}/4_needs_ok.svg"
-        write("4_needs_ok.svg", deletes + [image_el(s) for s in re_imgs] + [tile_el(t) for t in re_tiles],
+        needs_ok = f"{out.name}/5_needs_ok.svg"
+        write("5_needs_ok.svg", deletes + [slide_el(s) for s in re_imgs] + [tile_el(t) for t in re_tiles],
               uw, uh)
+    write_chunks("6_covers", [cover_el(s) for s in covers if s["action"] != "place"])
     # A shrink also resizes around the centre, so move the frame up and left by
     # half the difference first, and the resize lands on the origin.
     if (geo["w"], geo["h"]) != (uw, uh):
         dx, dy = (uw - geo["w"]) / 2, (uh - geo["h"]) / 2
-        write("5_shrink_1_move.svg", [], uw, uh, [origin[0] - dx, origin[1] - dy])
-        write("5_shrink_2_resize.svg", [], geo["w"], geo["h"])
-    write("6_header.svg", [text_el(sp) for sp in specs], geo["w"], geo["h"])
+        write("7_shrink_1_move.svg", [], uw, uh, [origin[0] - dx, origin[1] - dy])
+        write("7_shrink_2_resize.svg", [], geo["w"], geo["h"])
+    write("8_header.svg", [text_el(sp) for sp in specs], geo["w"], geo["h"])
 
     save(args.plan, {"frame_id": fid, "origin": origin, "frame": [geo["w"], geo["h"]],
                      "cols": geo["cols"], "rows": geo["rows"], "pitches": pitches,
@@ -338,15 +389,17 @@ def plan(args):
                      "header_removals": header_removals, "notes": notes, "svg": files,
                      "needs_ok": needs_ok})
 
-    tally = lambda items, acts: ", ".join(f"{a} {sum(i['action'] == a for i in items)}" for a in acts)
+    tally = lambda items, acts, field="action": ", ".join(f"{a} {sum(i[field] == a for i in items)}"
+                                                         for a in acts)
     print(f"wall: {pitches} pitches by {designers} designers, {len(tiles)} placeholders, "
           f"{geo['cols']} x {geo['rows']} grid, frame {geo['w']}x{geo['h']}, blur {'on' if blur else 'off'}")
     print(f"  slides: {tally(steps, ('place', 'keep', 'rebuild'))}, remove {len(removals)}")
+    print(f"  blurred copies: {tally(steps, ('create', 'keep', 'rebuild', 'remove'), 'cover')}")
     print(f"  placeholders: {tally(tiles, ('create', 'keep', 'rebuild'))}, remove {len(tile_removals)}")
     print(f"  header: {tally(specs, ('create', 'keep', 'rebuild'))}")
     print("SVG steps. Send them one at a time, in this order:")
     for f in files:
-        print(f"  {f}" + ("   <- deletes, needs Tim's OK. If he declines, stop and re-plan." if f == needs_ok else ""))
+        print(f"  {f}" + ("   <- deletes, needs Tim's OK. On a no, stop and re-plan." if f == needs_ok else ""))
     for n in notes:
         print("NOTE:", n)
 
@@ -381,25 +434,34 @@ def record(args):
     problems = []
 
     img_at, img_ids = {}, {im["data-miro-id"] for im in images}
-    for im in images:
+    for im in images:  # the read-back lists a frame's children bottom to top
         img_at.setdefault(at(im), []).append(im["data-miro-id"])
     placed = {}
     for s in plan_["steps"]:
         here = img_at.pop(tuple(s["box"][:2]), [])
-        stale = s["action"] == "rebuild" and here == [s["old_image_id"]]
-        if len(here) == 1 and not stale:
-            placed[s["name"]] = {"image_id": here[0], "sha256": s["sha256"], "box": s["box"],
-                                 "blurred": s["blurred"]}
+        want = 2 if s["cover"] in ("create", "rebuild", "keep") else 1
+        where = f"{s['box'][0]},{s['box'][1]}"
+        if any(i in s["gone"] for i in here):
+            problems.append(f"{s['name']}: deletes not applied, an old image is still at {where}")
+        elif len(here) != want:
+            problems.append(f"{s['name']}: {len(here)} images at {where}, expected {want}")
+        else:
+            ids = sorted(here, key=int)  # Miro ids grow with creation time: the slide is the older one
+            on_top = here == ids
+            if not on_top:
+                problems.append(f"{s['name']}: the blurred copy is under the slide at {where}")
+            placed[s["name"]] = {"image_id": ids[0], "sha256": s["sha256"], "box": s["box"],
+                                 "cover_id": ids[1] if want == 2 else None,
+                                 # a copy under its slide gets made again on the next run
+                                 "cover_sha256": s["cover_sha256"] if want == 2 and on_top else None}
             continue
-        problems.append(f"{s['name']}: " + ("rebuild not applied" if stale else
-                                            f"{len(here)} images at {s['box'][0]},{s['box'][1]}"))
         if s["name"] in ledger["placed"]:
             placed[s["name"]] = ledger["placed"][s["name"]]
     for name, old in ledger["placed"].items():
-        if name not in placed and old["image_id"] in img_ids:
+        if name not in placed and any(i in img_ids for i in (old["image_id"], old["cover_id"]) if i):
             placed[name] = old
-            problems.append(f"{name}: old image still on the wall")
-    known = {e["image_id"] for e in placed.values()}
+            problems.append(f"{name}: removed slide still on the wall")
+    known = {i for e in placed.values() for i in (e["image_id"], e["cover_id"]) if i}
     problems += [f"unplanned image at {x},{y}" for (x, y), ids in img_at.items() for i in ids if i not in known]
 
     shp_at, shp_ids = {}, {sh["data-miro-id"] for sh in shapes}
@@ -478,7 +540,8 @@ def set_blur(args):
     data = load(args.overrides, {})
     data["blur"] = args.state == "on"
     save(args.overrides, data)
-    print(f"blur is {args.state}. Run the plan to apply it to the wall.")
+    print(f"blur is {args.state}. Run the plan to " +
+          ("lay the blurred copies over the slides." if data["blur"] else "take the copies off. That is the reveal."))
 
 
 def check(args):
@@ -515,11 +578,29 @@ def check(args):
         fails.append("the 63-tile floor is no longer 9 x 7 in a 3168x1782 frame")
     if frame_for(69)["cols"] != 9:
         fails.append("69 pitches no longer lay out 9 across")
+
+    # What one run does to a slide and its blurred copy, case by case.
+    a = {"image_id": "1", "sha256": "s", "box": [0, 0, 1, 1], "cover_id": "2", "cover_sha256": "c"}
+    bare = dict(a, cover_id=None, cover_sha256=None)
+    for label, old, blur, want in [
+            ("new slide", None, True, ("place", "create", [])),
+            ("nothing changed", a, True, ("keep", "keep", [])),
+            ("the reveal", a, False, ("keep", "remove", ["2"])),
+            ("blur back on", bare, True, ("keep", "create", [])),
+            ("slide moved", dict(a, box=[9, 9, 1, 1]), True, ("rebuild", "rebuild", ["1", "2"])),
+            ("copy re-rendered", dict(a, cover_sha256="old"), True, ("keep", "rebuild", ["2"])),
+            ("slide re-rendered, blur off", dict(bare, sha256="old"), False, ("rebuild", "none", ["1"])),
+            ("placed as a blurred twin", dict(bare, sha256=None), True, ("rebuild", "create", ["1"]))]:
+        got = slide_actions(old, [0, 0, 1, 1], "s", "c", blur)
+        if got != want:
+            fails.append(f"blur, {label}: {got}, expected {want}")
+
     for f in fails:
         print("FAIL:", f)
     if fails:
-        sys.exit(f"{len(fails)} layout checks failed.")
+        sys.exit(f"{len(fails)} checks failed.")
     print("layout: every case 16:9, inside the margins, floor filled, no designer touching their own slides.")
+    print("blur: new, unchanged, revealed, re-blurred, moved and re-rendered slides all plan right.")
 
 
 def main():
@@ -535,8 +616,9 @@ def main():
     sub = ap.add_subparsers(dest="cmd")
     sub.add_parser("record", help="check a read-back of the frame, update the ledger").add_argument("file")
     sub.add_parser("adopt", help="take over placeholder tiles already on the frame").add_argument("file")
-    sub.add_parser("blur", help="show blurred slides until the reveal").add_argument("state", choices=["on", "off"])
-    sub.add_parser("check", help="layout self-check")
+    sub.add_parser("blur", help="lay blurred copies over the slides until the reveal").add_argument(
+        "state", choices=["on", "off"])
+    sub.add_parser("check", help="layout and blur self-check")
     args = ap.parse_args()
     {"record": record, "adopt": adopt, "blur": set_blur, "check": check}.get(args.cmd, plan)(args)
 

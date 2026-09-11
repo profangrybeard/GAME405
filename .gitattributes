@@ -1,0 +1,32 @@
+# Normalize line endings so Windows lab machines and macOS agree.
+* text=auto eol=lf
+*.py   text
+*.md   text
+*.html text
+*.json text
+
+# Binaries. Marked so git stops trying to diff or merge them.
+*.jpg  binary
+*.png  binary
+*.pdf  binary
+*.zip  binary
+
+# ---------------------------------------------------------------------------
+# Git LFS: deliberately NOT used in this repo. Read this before adding it.
+#
+# GitHub Pages does not serve LFS-tracked files. It serves the pointer file
+# instead, so an <img> tag or a Miro image widget receives about 130 bytes of
+# ASCII rather than a JPEG. Tracking idea-wall/slides/ in LFS silently breaks
+# the wall, and it breaks it in the worst possible place: on a classroom TV,
+# with no error anywhere in git.
+#
+# Source: "Git LFS cannot be used with GitHub Pages sites."
+# https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage
+#
+# The published slides do not need LFS anyway. 66 JPEGs at roughly 350KB each
+# is about 25MB, well inside what plain git handles comfortably.
+#
+# If a future subproject needs large binaries (engine content, video, builds),
+# give it its own repository with LFS enabled. Do not enable LFS here and do
+# not move this repo off Pages to accommodate it.
+# ---------------------------------------------------------------------------

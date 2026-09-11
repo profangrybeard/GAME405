@@ -1,0 +1,21 @@
+# Source decks stay local. Only the selected idea slides are published.
+# Keep the folder itself so it exists after a fresh clone.
+idea-wall/decks/*
+!idea-wall/decks/.gitkeep
+*.pdf
+
+# Every page of a flagged deck, rendered for review. Can include personal
+# photos. Never published.
+idea-wall/review/
+
+# Roster exports carry student IDs. Never commit one.
+*.xls
+*.xlsx
+roster*
+gc_*
+
+# Local
+.venv/
+__pycache__/
+.DS_Store
+Thumbs.db

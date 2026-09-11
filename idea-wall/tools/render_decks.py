@@ -28,12 +28,17 @@ def slug(s):
     return re.sub(r"[^a-z0-9]+", "", s.lower())
 
 
-def load_roster(path):
+def load_roster(path, overrides=None):
     """Blackboard gradebook column export: UTF-16 TSV, Last Name / First Name.
-    Returns {key: (first, last)}."""
+    Students registered after the export go in overrides.json as
+    "extra_students": [[last, first], ...]. Returns {key: (first, last)}."""
     raw = Path(path).read_text(encoding="utf-16")
     rows = list(csv.reader(io.StringIO(raw), delimiter="\t"))
     people = [(r[0].strip(), r[1].strip()) for r in rows[1:] if r and r[0].strip()]
+    if overrides and Path(overrides).exists():
+        known = {(slug(last), slug(first)) for last, first in people}
+        extra = json.loads(Path(overrides).read_text()).get("extra_students", [])
+        people += [(last, first) for last, first in extra if (slug(last), slug(first)) not in known]
     counts = {}
     for last, _ in people:
         counts[slug(last)] = counts.get(slug(last), 0) + 1
@@ -166,7 +171,7 @@ def main():
     ap.add_argument("--ideas", type=int, default=3)
     args = ap.parse_args()
 
-    roster = load_roster(args.roster) if args.roster else {}
+    roster = load_roster(args.roster, args.overrides) if args.roster else {}
     page_overrides, pulled = load_overrides(args.overrides)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)

@@ -179,10 +179,14 @@ def run_checks(root):
           "big idea numbers skipped when reading titles")
     check({F["chen"], F["rivera"]} <= flagged, "four-idea deck and collage title page flagged")
 
-    print("run 2: page overrides, and tanaka_idea2 pulled")
+    print("run 2: page overrides, tanaka_idea2 pulled, and a late registration")
+    deck(root / "decks" / "ATL_A01_GAME405_NoorHaddad_GamePitch.pdf", "Noor Haddad",
+         ["SALT MARSH", "IRON CHOIR", "LOW TIDE"], "normal")
     ov = {"pages": {F["okafor"]: [3, 4], F["chen"]: [3, 4, 5, 6], F["rivera"]: [3, 4, 5]},
-          "pulled": ["tanaka_idea2"]}
+          "pulled": ["tanaka_idea2"], "extra_students": [["Haddad", "Noor"]]}
     m, titles, flagged = render(root, ov)
+    check(titles.get("haddad_idea1.jpg") == "SALT MARSH",
+          "a student in extra_students but not in the roster export is matched")
     check([titles.get(f"okafor_idea{n}.jpg") for n in (1, 2)] == ["GLASS FERRY", "NIGHT MARKET"],
           "override publishes exactly the chosen pages")
     check("chen_idea4.jpg" in titles and "rivera_idea3.jpg" in titles,

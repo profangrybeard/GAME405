@@ -8,8 +8,9 @@ anything. Most of the obvious suggestions have already been made, argued, and
 rejected for stated reasons. Re-proposing them costs Tim time and tells him you
 did not read.
 
-Written September 11 2026, and updated the same day after the pipeline test.
-Anything not listed here is genuinely open.
+Written September 11 2026, and updated the same day after the pipeline test
+and again when the wall became sized by what is delivered. Anything not listed
+here is genuinely open.
 
 ---
 
@@ -44,9 +45,9 @@ the TV. The board is live and already linked in Blackboard.
 
 Board: https://miro.com/app/board/uXjVHoWCO8w=/
 
-**A mosaic, not a funnel.** Sixty-nine tiles tiled edge to edge, all at full
-strength, all in the same plane. The 5 and the 2 are marks added on top later,
-never subtractions from the field.
+**A mosaic, not a funnel.** Every delivered pitch tiled edge to edge, all at
+full strength, all in the same plane. The 5 and the 2 are marks added on top
+later, never subtractions from the field.
 
 **Students' own slide art, not a typeset system.** Tim: "We need their art. The
 mess is the point." Do not normalize, restyle, crop, or re-typeset student
@@ -54,24 +55,24 @@ slides.
 
 **Shuffled placement, not grouped by designer.** Tim's reason: grouping puts a
 designer's three slides adjacent, and since they share a deck background that
-produces visible color blocks. Placement uses a fixed stride of 23 across a
-9-column grid, which guarantees zero same-author adjacency including diagonals.
-Verified across all 69 positions. Do not replace this with a random shuffle;
-random reintroduces the adjacency.
+produces visible color blocks. The placement step works out an order in which
+no designer's slides touch, diagonals included, for any number of pitches. It is
+deterministic: the same slides always give the same wall. Do not replace it
+with a random shuffle; random reintroduces the adjacency.
 
-**Grid geometry.** 9 columns. Tiles 320x180 with a 16px gutter, mosaic origin at
-(80, 170) inside the frame. Frame is 3168x1782, which is exactly 16:9 so
-presenting to it fills a classroom TV with no letterboxing. Last row is ragged
-and deliberately not centered.
+**Grid geometry.** Tiles 320x180 with a 16px gutter. The column count is chosen
+on every run so the frame stays exactly 16:9, and presenting it fills a
+classroom TV with no letterboxing. 69 pitches lay out 9 across and 8 down. Last
+row is ragged and deliberately not centered.
 
 **Palette matches the GAME 405 Studio Board.** Ground #101B2A, tile #1E2E45,
 edge #2C3E56, cream #EAE6DC, slate #8FA0B6, amber #F0A93B. The wall should read
 as the same object as the board students already open.
 
 **Filenames are `lastname_ideaN`.** Roster-derived, lowercase, punctuation
-stripped, first initial appended on duplicate last names. These match Miro tile
-names one to one. Renaming a published file breaks a tile with no error
-anywhere.
+stripped, first initial appended on duplicate last names. The placement ledger
+tracks every slide on the wall by this name. Renaming a published file makes the
+wall treat it as a new slide.
 
 **PDFs in, JPEGs out, handled by us.** Tim: "We are taking their pdfs and
 handling this formatting on our own." Students submit decks as they already
@@ -100,27 +101,17 @@ pushed to Pages, and Miro fetches each one from its Pages URL when it is placed.
 The slides being public is fine. Tim has that handled.
 
 **Why a Pages URL and not a direct upload.** Both routes were run back to back
-on September 11 with Lex Broughton's deck. Both put each slide exactly on its
-tile, and both times Miro stored its own copy, byte-identical to the rendered
-JPEG. So the wall does not depend on Pages once a slide is placed. Placing from
-a URL takes one call per slide against three for an upload, has no upload slot
-that expires after ten minutes, and leaves git history as the record of what was
-published.
+on September 11 with Lex Broughton's deck. Both put each slide exactly where it
+belonged, and both times Miro stored its own copy, byte-identical to the
+rendered JPEG. So the wall does not depend on Pages once a slide is placed.
+Placing from a URL takes one call per slide against three for an upload, has
+no upload slot that expires after ten minutes, and leaves git history as the
+record of what was published.
 
 **Placement is a pipeline step, not hand work.** `idea-wall/tools/place_slides.py`
-plans every placement and keeps the ledger in `idea-wall/placements.json`.
-Claude carries out the plan through the claude.ai Miro connector and records
-each image back. A second run with nothing new does nothing, so it is safe to
-re-run.
-
-**Slots are first come and never reshuffled.** Each student owns one slot from 1
-to 23, and a new student takes the lowest free one. A tile name on the board is
-load-bearing, and the stride of 23 makes every slot equal, so reordering gains
-nothing and risks a broken tile.
-
-**Tiles are renamed when their slide is placed.** `studentNN_ideaN` becomes
-`lastname_ideaN` in the same step that puts the image on it. First done for Lex
-Broughton, slot 1, on September 11, with Tim's approval.
+plans the whole wall and keeps the ledger in `idea-wall/placements.json`.
+Claude sends the plan through the claude.ai Miro connector and records the
+result. A second run with nothing new changes nothing, so it is safe to re-run.
 
 **Per-deck page overrides exist.** `idea-wall/overrides.json` holds the chosen
 pages for a deck and a `pulled` list for takedowns. Built after test decks
@@ -131,6 +122,37 @@ until its pages are chosen.
 **Takedowns reach the board.** A pulled slide drops out of the manifest, and the
 placement step lists it for removal from the wall. Nothing comes off the board
 without Tim's OK.
+
+---
+
+## Decided September 11, the wall sizes itself
+
+**The wall holds exactly the pitches that were delivered.** Tim: "the board
+needs to be smart enough to shrink from 69 due to lack of content and grow due
+to additional student registration." No placeholder tiles. A student who
+delivers one or two pitches gets one or two tiles, and a new registration grows
+the wall on the next run. This replaces the fixed 69 tiles, the stride of 23,
+and the first-come slots.
+
+**The counters are real.** Tim: "the 69 count being placed text is concerning.
+I want a real counter up there." PITCHED counts delivered pitches, "in case some
+students just do 1 or 2." Under it, as subtext, the count of designers, "so that
+everyone sees the total number of students that did the assignment." Miro text
+cannot count by itself, so the placement step rewrites both from the manifest
+on every run and reads them back to check. JAM TEAMS stays 5 and PRODUCTION
+stays 2.
+
+**The counters dominate the header.** Tim: "I want the pitches, jam teams, and
+production counters to be dominant visually." The numbers are set well above
+the title size, amber on the navy ground.
+
+**Title and byline.** The title is "Senior Studio 2026/2027: Idea Wall". The
+byline reads "Every idea this room pitched. **Nothing** thrown away.", with
+"Nothing" in bold.
+
+**Yoseph Arafa is the 23rd student.** He is not in the Blackboard export yet, so
+he is listed in `overrides.json` under `extra_students` until he is. With him
+the roster is 23, and 69 pitches if everyone delivers three.
 
 ---
 
@@ -175,11 +197,6 @@ the single deck, or use a per-deck page override.
 ---
 
 ## Open
-
-**Final roster count.** 22 students as of September 11, so 66 idea slides. The
-board carries 69 tiles, leaving three spare. Tim is still getting adds and said
-to expect a few more. Do not trim the board down to match; extend it when the
-number settles.
 
 **Ground color.** The dark navy placeholder fill is deliberate, since a dark
 ground makes slide art read like a gallery hang. If the decks come back mostly

@@ -16,6 +16,8 @@ gc_*
 
 # Written fresh by place_slides.py on every run. placements.json is the record.
 idea-wall/placement_plan.json
+idea-wall/placement_svg/
+idea-wall/placement_read.svg
 
 # Local
 .venv/

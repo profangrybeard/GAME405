@@ -112,25 +112,31 @@ clone.
 
 ## Placement
 
-`tools/place_slides.py` works out what should change on the wall and writes it
-to `placement_plan.json`. It never talks to Miro. Claude carries out the plan
-through the Miro connector, following the placement loop in CLAUDE.md.
+`tools/place_slides.py` lays out the wall from what was delivered. It never
+talks to Miro. Claude sends its SVG steps through the Miro connector, following
+the placement loop in CLAUDE.md.
 
-- **place**: a new slide goes onto its tile, and the tile is renamed from
-  `studentNN_ideaN` to `lastname_ideaN`.
-- **replace**: a slide whose image changed. Needs Tim's OK, since it deletes
-  the old image.
-- **remove**: a slide no longer in the manifest, usually a takedown. Needs
-  Tim's OK. The tile goes back to `studentNN_ideaN`.
+- **The wall is the delivered pitches.** No empty tiles. It shrinks when a
+  student delivers one or two pitches, or none, and grows when students are
+  added. A fourth idea gets a tile like any other.
+- **The frame is always 16:9**, so presenting it fills the classroom TV. The
+  grid is chosen to fit: 69 pitches lay out 9 across and 8 down.
+- **No designer's slides touch**, diagonals included. The order is worked out,
+  not random, so the same slides always give the same wall.
+- **The counters are live.** PITCHED counts the slides on the wall, the line
+  under it counts designers with at least one, and JAM TEAMS and PRODUCTION
+  stay 5 and 2.
 
-Each student owns one slot from 1 to 23, first come, never reshuffled. Idea N
-of slot NN sits at grid position (N-1)*23 + (NN-1), the stride that keeps a
-designer's three slides from touching. The wall has three tiles per student,
-so a fourth idea is reported, not placed.
+Each run sorts every slide into place, move, keep, replace or remove. Replace
+and remove delete an image from the board, so they need Tim's OK.
 
-`placements.json` is the ledger of what is on the board: which image sits on
-which tile, and a hash of the slide it came from. It is committed. Running the
-plan again with nothing new does nothing.
+`placements.json` is the ledger of what is on the wall: each slide's image, its
+box, and a hash of the file it came from. It is committed. Running the plan
+again with nothing new changes nothing.
+
+A student registered after the roster export goes in `overrides.json` as
+`"extra_students": [["Arafa", "Yoseph"]]`, last name first, until the next
+export includes them.
 
 ## Naming
 
@@ -139,8 +145,9 @@ get a first initial appended. Names come from the roster, not the filename the
 student chose, so a submission named anything lands correctly as long as the
 student's first and last name appear somewhere in the filename.
 
-A tile on the board takes this name when its slide is placed. Renaming a
-published file breaks that link.
+The placement ledger tracks each slide on the wall by this name. Renaming a
+published file makes the wall treat it as a new slide and the old one as
+removed.
 
 ## manifest.json
 
@@ -177,12 +184,14 @@ That is the working title in every deck template seen so far. Worth a glance.
 tools/render_decks.py     the renderer
 tools/check_renderer.py   runs the renderer against synthetic decks, run after any change
 tools/verify_publish.py   confirms every slide is live and serving as an image
-tools/place_slides.py     plans placement on the Miro wall and keeps the ledger
+tools/place_slides.py     lays out the Miro wall, writes its SVG steps, keeps the ledger
 decks/                    source PDFs, gitignored
 review/                   every page of each flagged deck, gitignored
 slides/                   published JPGs, served by Pages for Miro to fetch
-overrides.json            chosen pages per deck, and pulled slides
+overrides.json            chosen pages per deck, pulled slides, late registrations
 manifest.json             what was published and what needs review
-placements.json           what is on the board, and where
+placements.json           what is on the wall, and where
 placement_plan.json       the latest plan, gitignored
+placement_svg/            the latest SVG steps for the Miro connector, gitignored
+placement_read.svg        the wall as read back for `record`, gitignored
 ```

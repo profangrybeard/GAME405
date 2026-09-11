@@ -81,35 +81,37 @@ cd idea-wall
 python3 tools/place_slides.py
 ```
 
-It writes `placement_plan.json` and prints each step. Carry the plan out
-through the claude.ai Miro connector. The plugin Miro connector is signed into
-a different org and cannot see this board.
+It works out the whole wall from the manifest: the grid, a 16:9 frame, where
+each slide goes, and the counters. It writes `placement_plan.json` and the SVG
+steps in `placement_svg/`. Send each step, in file order, through the claude.ai
+Miro connector's `canvas_update_from_svg`. The plugin Miro connector is signed
+into a different org and cannot see this board.
 
-- `place`: find the tile's id by searching the board for its `tile` name.
-  Create the image from `url` inside frame `frame_id` at `x`, `y`, width 320.
-  Those are the image's centre, not its corner. Rename the tile to `name`.
-  Then run `python3 tools/place_slides.py record <file> <image_id> <tile_id>`.
-- `replace`: needs Tim's OK, because it deletes. Delete `old_image_id`, create
-  the new image the same way, then record.
-- `remove`: needs Tim's OK. Delete `image_id`, rename the tile back to `tile`,
-  then run `python3 tools/place_slides.py forget <file>`.
+- `3_needs_ok.svg` deletes images: a slide that was pulled, or the old copy of
+  one that changed. Show Tim the list and send it only with his OK.
+- Then read the wall frame back with `canvas_read_as_svg` (widget
+  `3458764683429206119`), save the SVG to `placement_read.svg`, and run
+  `python3 tools/place_slides.py record placement_read.svg`. It checks that
+  every slide sits exactly on its box, nothing is doubled, and the counters read
+  right, then updates `placements.json`. Commit that file.
 
-Then read the placed images back. Each one must sit exactly on its `box`, and no
-tile may hold two images. Commit `placements.json`. A second run of the plan
-with nothing new prints 0 actions.
+The counters are text. Miro cannot count on its own, so the placement step
+rewrites them from the manifest on every run, and `record` reads them back.
 
-`python3 tools/place_slides.py check` confirms the grid math still matches the
-wall and that no designer's slides touch. Run it after any change to the script.
+`python3 tools/place_slides.py check` runs the layout against many wall sizes:
+every frame 16:9, every slide inside the margins, no designer's slides touching.
+Run it after any change to the script.
 
 ## Known state, September 11 2026
 
-- Roster: 22 students, so 66 idea slides expected. Students were still adding,
-  so treat the count as a moving number.
-- The Miro board has 69 placeholder tiles named `studentNN_ideaN`, which leaves
-  three spare. Tiles get renamed to `lastname_ideaN` as decks arrive.
+- Roster: 22 students in the Blackboard export, plus Yoseph Arafa under
+  `extra_students` in `overrides.json`, so 23 and up to 69 pitches. Students
+  were still adding, so treat the count as a moving number.
+- The wall sizes itself to the delivered pitches. Until the new placement step
+  runs live, the board still shows the 69 placeholder tiles from the old design.
 - Output: JPEG, 1920 wide, quality 92, roughly 350KB each.
-- `title` in the manifest is the largest type on the page. It becomes the tile
-  label, so a wrong title is a visible error on a classroom TV.
+- `title` in the manifest is the largest type on the page. The wall does not
+  show it, since each slide carries its own title, but it is worth a glance.
 
 ## Style
 

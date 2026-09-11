@@ -34,7 +34,7 @@ It lives in three places. Removing it from one is not removing it.
    manifest entry drops out, and the run reports the file if it is still there.
 3. Run the placement step, `idea-wall/tools/place_slides.py` (see CLAUDE.md).
    It lists the slide for removal from the Miro board. Confirm it, and the
-   image comes off the wall and its tile goes back to `studentNN_ideaN`.
+   image comes off the wall and the rest of the wall closes the gap.
 
 Commit steps 1 and 2 together so the manifest never points at a file that is
 gone, and commit `idea-wall/placements.json` after step 3. Step 3 is the one

@@ -1,4 +1,7 @@
 {
   "pages": {},
-  "pulled": []
+  "pulled": [],
+  "extra_students": [
+    ["Arafa", "Yoseph"]
+  ]
 }

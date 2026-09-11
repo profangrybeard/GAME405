@@ -68,18 +68,6 @@
       "cover_id": "3458764683463387157",
       "cover_sha256": "69904ddd8293fe112e2d30808a0413256a5fd29a30a04e5524637c8821d607cd"
     },
-    "broughton_idea2": {
-      "image_id": "3458764683463290720",
-      "sha256": "98b6f881d6fc04e9cd1afd78e649de84f9e00aa7f4000317310f7d71a246ed78",
-      "box": [
-        416,
-        330,
-        320,
-        180
-      ],
-      "cover_id": "3458764683463387155",
-      "cover_sha256": "71dad349ef50b247e21ef6dc02cf945e051fc40608e4a9e4bbd1acc295f9d343"
-    },
     "broughton_idea3": {
       "image_id": "3458764683463290721",
       "sha256": "288be0ef4c651825b34829423129799926c90843bd5ec8af5284a829b2ba9e43",
@@ -91,22 +79,34 @@
       ],
       "cover_id": "3458764683463387154",
       "cover_sha256": "f027a4f8ef7cd37423d39b215a368e730f8682951d8dba564b3e8216d631607c"
+    },
+    "broughton_idea2": {
+      "image_id": "3458764683465601221",
+      "sha256": "98b6f881d6fc04e9cd1afd78e649de84f9e00aa7f4000317310f7d71a246ed78",
+      "box": [
+        1424,
+        330,
+        320,
+        180
+      ],
+      "cover_id": "3458764683465601477",
+      "cover_sha256": "71dad349ef50b247e21ef6dc02cf945e051fc40608e4a9e4bbd1acc295f9d343"
     }
   },
   "tiles": {
-    "student04_idea1": {
-      "tile_id": "3458764683460673221",
+    "student02_idea1": {
+      "tile_id": "3458764683465601042",
       "box": [
-        1088,
+        416,
         330,
         320,
         180
       ]
     },
-    "student05_idea1": {
-      "tile_id": "3458764683460673222",
+    "student04_idea1": {
+      "tile_id": "3458764683460673221",
       "box": [
-        1424,
+        1088,
         330,
         320,
         180

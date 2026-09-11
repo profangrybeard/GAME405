@@ -1,0 +1,31 @@
+{
+  "slots": {
+    "broughton": 1
+  },
+  "placed": {
+    "broughton_idea1": {
+      "file": "broughton_idea1.jpg",
+      "tile": "student01_idea1",
+      "tile_id": "3458764683429206136",
+      "image_id": "3458764683451524607",
+      "sha256": "c69f416a85c236bcf2826928b63fea1c6285a0174748022bda8ebf5c3292715b",
+      "title": "SAY CHEESE!"
+    },
+    "broughton_idea2": {
+      "file": "broughton_idea2.jpg",
+      "tile": "student01_idea2",
+      "tile_id": "3458764683429206166",
+      "image_id": "3458764683451524664",
+      "sha256": "98b6f881d6fc04e9cd1afd78e649de84f9e00aa7f4000317310f7d71a246ed78",
+      "title": "FIRSTBORN"
+    },
+    "broughton_idea3": {
+      "file": "broughton_idea3.jpg",
+      "tile": "student01_idea3",
+      "tile_id": "3458764683429206754",
+      "image_id": "3458764683451524786",
+      "sha256": "288be0ef4c651825b34829423129799926c90843bd5ec8af5284a829b2ba9e43",
+      "title": "THE FOURTH CROWN"
+    }
+  }
+}

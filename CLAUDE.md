@@ -46,8 +46,10 @@ Run it after a push with new content and before anyone builds the board.
   `*.xls` and `gc_*`, but check before any `git add -A`.
 - Only renderer-selected pages get published. A page that was not selected was
   not selected on purpose.
-- Takedown requests: see NOTICE.md. It is three steps, and the third one, the
-  Miro board, has no automation. Say so out loud every time.
+- Takedown requests: see NOTICE.md. It is three steps. The third, the Miro
+  board, runs through the placement step and needs Tim's OK before anything is
+  deleted. Miro keeps its own copy of every slide, so removing the file from
+  Pages does not take it off the wall. Say so out loud every time.
 
 ## The idea-wall loop
 
@@ -69,6 +71,35 @@ name, not an override.
 
 `tools/check_renderer.py` runs the renderer against synthetic decks covering
 every failure seen so far. Run it after any change to `render_decks.py`.
+
+## The placement loop
+
+After the render loop is done, pushed, and `verify_publish.py` passes:
+
+```bash
+cd idea-wall
+python3 tools/place_slides.py
+```
+
+It writes `placement_plan.json` and prints each step. Carry the plan out
+through the claude.ai Miro connector. The plugin Miro connector is signed into
+a different org and cannot see this board.
+
+- `place`: find the tile's id by searching the board for its `tile` name.
+  Create the image from `url` inside frame `frame_id` at `x`, `y`, width 320.
+  Those are the image's centre, not its corner. Rename the tile to `name`.
+  Then run `python3 tools/place_slides.py record <file> <image_id> <tile_id>`.
+- `replace`: needs Tim's OK, because it deletes. Delete `old_image_id`, create
+  the new image the same way, then record.
+- `remove`: needs Tim's OK. Delete `image_id`, rename the tile back to `tile`,
+  then run `python3 tools/place_slides.py forget <file>`.
+
+Then read the placed images back. Each one must sit exactly on its `box`, and no
+tile may hold two images. Commit `placements.json`. A second run of the plan
+with nothing new prints 0 actions.
+
+`python3 tools/place_slides.py check` confirms the grid math still matches the
+wall and that no designer's slides touch. Run it after any change to the script.
 
 ## Known state, September 11 2026
 

@@ -10,18 +10,20 @@ folder with its own README rather than at the root.
 
 | Folder | What it is | Published at |
 |---|---|---|
-| [`idea-wall/`](idea-wall/) | Renders pitch deck PDFs into the slide images behind the class idea wall | `/idea-wall/` |
+| [`idea-wall/`](idea-wall/) | Renders pitch deck PDFs into slide images and places them on the class idea wall in Miro | `/idea-wall/slides/`, images only |
 
 The idea wall itself is a Miro board:
 **https://miro.com/app/board/uXjVHoWCO8w=/**
 
-The repo publishes the images. The board displays them. Changing one does not
-change the other.
+The repo renders and hosts the images. The placement step puts them on the
+board, and Miro keeps its own copy of each one. Changing a file here does not
+change the board until the placement step runs.
 
 ## Why this repo is public
 
-GitHub Pages is what gives each slide a URL, and Miro can only pull an image
-it can fetch. Public Pages is the price of a board that builds itself.
+GitHub Pages gives each slide a URL, and the placement step has Miro fetch each
+slide from it. Pages is an image host and nothing more. There is no web page;
+the board is the display.
 
 That makes student work world-readable, so read [NOTICE.md](NOTICE.md) before
 adding anything. The short version: only the idea slides get published, never
@@ -48,8 +50,8 @@ files through Jekyll, which skips anything starting with an underscore and adds
 a build step that can fail on filenames you did not choose. The file is empty
 on purpose. Do not delete it.
 
-**4. Set the About panel.** Description, and put the Pages URL in the website
-field. Six weeks from now you will be looking for this link from your phone.
+**4. Set the About panel.** Description, and put the Miro board URL in the
+website field. The Pages site has no page of its own to link to.
 
 **5. Do not add Git LFS.** Pages does not serve LFS-tracked files, it serves the
 pointer text, so an LFS-tracked slide reaches Miro as about 130 bytes of ASCII
@@ -63,8 +65,8 @@ cd idea-wall
 python3 tools/verify_publish.py --base https://profangrybeard.github.io/GAME405/idea-wall/
 ```
 
-That catches 404s, wrong content types, and LFS pointers. Run it before anyone
-places images on the board.
+That catches 404s, wrong content types, and LFS pointers. Run it before anything
+is placed on the board.
 
 ## Conventions
 
@@ -73,6 +75,7 @@ places images on the board.
 - No em dashes in docs, comments, or commit messages.
 - Filenames published to Pages are load-bearing. The Miro board references them
   by name, so renaming a file breaks a tile.
+- Decisions and the reasons for them live in [DECISIONS.md](DECISIONS.md).
 
 ## Adding a subproject
 
@@ -80,7 +83,6 @@ places images on the board.
 <name>/
   README.md      what it is, how to run it, what it publishes
   tools/         scripts
-  index.html     only if it needs a page
 ```
 
 Then add a row to the table above. If the new subproject needs large binaries,

@@ -1,19 +1,21 @@
 # Idea Wall
 
-Turns student pitch deck PDFs into the slide images behind the class idea wall.
+Turns student pitch deck PDFs into slide images and places them on the class
+idea wall in Miro.
 
 Board: https://miro.com/app/board/uXjVHoWCO8w=/
-Published at: `/idea-wall/` on the class Pages site.
+
+The board is the only display. Slides are served from `/idea-wall/slides/` on
+the class Pages site so Miro can fetch them, and Miro keeps its own copy of
+each one once it is placed. There is no web page. DECISIONS.md at the repo root
+records why.
 
 Repo-wide setup, the LFS decision, and the takedown policy live at the repo
 root in README.md, .gitattributes and NOTICE.md. Read those first.
 
 Every student pitches three ideas. Five go to Amnesia Fortnight jam teams, two
 reach production. The rest stay on the wall, visible and scavengeable, for the
-whole quarter. This repo publishes the images the wall is built from.
-
-The Miro board is the display surface. This repo is the source of truth for
-what goes on it.
+whole quarter.
 
 ## What is public
 
@@ -62,6 +64,17 @@ python3 tools/render_decks.py \
    deck is rendered page by page into `review/<deck name>/p<N>.jpg`, and nothing
    from it is published. Fix each one (see below), then re-run.
 6. Commit and push. The images are live at the Pages URL within a minute.
+7. Verify:
+
+```bash
+python3 tools/verify_publish.py --base https://profangrybeard.github.io/GAME405/idea-wall/
+```
+
+   It checks every manifest entry for a 200, an image content type, and a real
+   byte count. Miro fetches from these URLs, so a slide that fails here would
+   fail on the board.
+8. Place: `python3 tools/place_slides.py`, then carry out the plan. See
+   Placement below.
 
 ## When a deck is flagged
 
@@ -74,7 +87,7 @@ A deck is flagged, and publishes nothing, when:
 - **The pick count is not three.** Four ideas, one idea spread over two pages,
   a collage title page, or only two ideas. Look at its pages in `review/` and
   list the ones to publish in `overrides.json`, keyed by the deck's filename.
-  Pages are 1-based, in idea order. An override can publish four ideas.
+  Pages are 1-based, in idea order.
 
   ```json
   {
@@ -97,6 +110,28 @@ Do not loosen the scoring thresholds to make one deck pass. See CLAUDE.md.
 `overrides.json` is committed, so page choices and takedowns survive a fresh
 clone.
 
+## Placement
+
+`tools/place_slides.py` works out what should change on the wall and writes it
+to `placement_plan.json`. It never talks to Miro. Claude carries out the plan
+through the Miro connector, following the placement loop in CLAUDE.md.
+
+- **place**: a new slide goes onto its tile, and the tile is renamed from
+  `studentNN_ideaN` to `lastname_ideaN`.
+- **replace**: a slide whose image changed. Needs Tim's OK, since it deletes
+  the old image.
+- **remove**: a slide no longer in the manifest, usually a takedown. Needs
+  Tim's OK. The tile goes back to `studentNN_ideaN`.
+
+Each student owns one slot from 1 to 23, first come, never reshuffled. Idea N
+of slot NN sits at grid position (N-1)*23 + (NN-1), the stride that keeps a
+designer's three slides from touching. The wall has three tiles per student,
+so a fourth idea is reported, not placed.
+
+`placements.json` is the ledger of what is on the board: which image sits on
+which tile, and a hash of the slide it came from. It is committed. Running the
+plan again with nothing new does nothing.
+
 ## Naming
 
 `<lastname>_idea<N>.jpg`, lowercase, punctuation stripped. Duplicate last names
@@ -104,7 +139,8 @@ get a first initial appended. Names come from the roster, not the filename the
 student chose, so a submission named anything lands correctly as long as the
 student's first and last name appear somewhere in the filename.
 
-These names match the placeholder tiles on the Miro board one to one.
+A tile on the board takes this name when its slide is placed. Renaming a
+published file breaks that link.
 
 ## manifest.json
 
@@ -133,9 +169,7 @@ Written on every run. Not just a log, it is what the board placement reads.
 `needs_review` lists deck filenames, the same keys `overrides.json` uses.
 
 `title` is the largest type on the page, skipping big idea numbers like "01".
-That is the working title in every deck template seen so far. It becomes the
-tile label on the board, so a wrong title here is a wrong label there. Worth a
-glance.
+That is the working title in every deck template seen so far. Worth a glance.
 
 ## Layout
 
@@ -143,20 +177,12 @@ glance.
 tools/render_decks.py     the renderer
 tools/check_renderer.py   runs the renderer against synthetic decks, run after any change
 tools/verify_publish.py   confirms every slide is live and serving as an image
+tools/place_slides.py     plans placement on the Miro wall and keeps the ledger
 decks/                    source PDFs, gitignored
 review/                   every page of each flagged deck, gitignored
-slides/                   published JPGs, served by Pages
+slides/                   published JPGs, served by Pages for Miro to fetch
 overrides.json            chosen pages per deck, and pulled slides
 manifest.json             what was published and what needs review
-index.html                contact sheet, the /idea-wall/ landing page
+placements.json           what is on the board, and where
+placement_plan.json       the latest plan, gitignored
 ```
-
-## Verify after pushing
-
-```bash
-python3 tools/verify_publish.py --base https://profangrybeard.github.io/GAME405/idea-wall/
-```
-
-Checks every manifest entry for a 200, an image content type, and a real byte
-count. Run it before anyone places images on the board. A broken slide shows up
-as a dead tile on a classroom TV, which is a bad place to find out.

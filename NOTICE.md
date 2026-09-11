@@ -32,11 +32,15 @@ It lives in three places. Removing it from one is not removing it.
    puts it back, because the source deck is still in `decks/`.
 2. Delete the file from `idea-wall/slides/` and re-run the renderer. Its
    manifest entry drops out, and the run reports the file if it is still there.
-3. Delete the image from the Miro board by hand.
+3. Run the placement step, `idea-wall/tools/place_slides.py` (see CLAUDE.md).
+   It lists the slide for removal from the Miro board. Confirm it, and the
+   image comes off the wall and its tile goes back to `studentNN_ideaN`.
 
 Commit steps 1 and 2 together so the manifest never points at a file that is
-gone. Step 3 has no automation and is easy to forget. The board is the copy the
-class actually sees.
+gone, and commit `idea-wall/placements.json` after step 3. Step 3 is the one
+that matters most. The board is the copy the class actually sees, and Miro
+keeps its own copy of every slide, so deleting the file from Pages does not
+take it off the wall.
 
 If the request arrives after the quarter ends, honor it anyway.
 

@@ -258,7 +258,7 @@ def main():
         "problems": problems,
         "slides": entries,
     }
-    Path(args.manifest).write_text(json.dumps(manifest, indent=2))
+    Path(args.manifest).write_text(json.dumps(manifest, indent=2), newline="\n")
 
     print(f"{len(entries)} slides from {len(pdfs)} decks -> {out}")
     if needs_review:

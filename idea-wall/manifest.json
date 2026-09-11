@@ -1,0 +1,35 @@
+{
+  "count": 3,
+  "students": 1,
+  "needs_review": [],
+  "problems": [],
+  "slides": [
+    {
+      "file": "broughton_idea1.jpg",
+      "student": "broughton",
+      "name": "Lex Broughton",
+      "idea": 1,
+      "title": "SAY CHEESE!",
+      "source": "ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
+      "page": 3
+    },
+    {
+      "file": "broughton_idea2.jpg",
+      "student": "broughton",
+      "name": "Lex Broughton",
+      "idea": 2,
+      "title": "FIRSTBORN",
+      "source": "ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
+      "page": 4
+    },
+    {
+      "file": "broughton_idea3.jpg",
+      "student": "broughton",
+      "name": "Lex Broughton",
+      "idea": 3,
+      "title": "THE FOURTH CROWN",
+      "source": "ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
+      "page": 5
+    }
+  ]
+}

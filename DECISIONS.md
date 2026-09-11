@@ -186,10 +186,6 @@ ground makes slide art read like a gallery hang. If the decks come back mostly
 dark, this may want to go lighter. Decide by looking at it on the actual TV, not
 in the abstract.
 
-**Tiles outside the frame.** 41 of the 69 placeholder tiles sit inside the
-frame's area but are not attached to it. Placed images are attached to the
-frame. Moving the frame before the tiles are attached would separate the two.
-
 ---
 
 ## Proposed but never answered

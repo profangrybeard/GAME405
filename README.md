@@ -73,8 +73,9 @@ is placed on the board.
 - One folder per subproject, each with its own README and its own `tools/`.
 - Source material that should not be public is gitignored, not trusted to care.
 - No em dashes in docs, comments, or commit messages.
-- Filenames published to Pages are load-bearing. The Miro board references them
-  by name, so renaming a file breaks a tile.
+- Filenames published to Pages are load-bearing. The placement step tracks each
+  slide on the Miro board by name, so renaming a file makes the wall remove the
+  old tile and place the slide again as a new one.
 - Decisions and the reasons for them live in [DECISIONS.md](DECISIONS.md).
 
 ## Adding a subproject

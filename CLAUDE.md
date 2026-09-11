@@ -25,9 +25,11 @@ separate repo, do not migrate this one.
 **Do not delete `.nojekyll`.** It is empty and it is supposed to be. Without it
 Pages runs a Jekyll build that skips underscore-prefixed paths.
 
-**Published filenames are load-bearing.** The Miro board references slides by
-filename. Renaming a published file breaks a tile on the wall with no error
-anywhere. Do not rename or restructure `idea-wall/slides/` casually.
+**Published filenames are load-bearing.** The placement ledger tracks every
+slide on the wall by its filename, and Miro fetches each new slide from its
+Pages URL. Renaming a published file makes the next placement run remove the
+old tile, which needs Tim's OK, and place the slide again as a new one in a new
+spot. Do not rename or restructure `idea-wall/slides/` casually.
 
 **The Pages URL is case-sensitive.** The site is
 `https://profangrybeard.github.io/GAME405/`. Lowercase `/game405/` is a 404, so

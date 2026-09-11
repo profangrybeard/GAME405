@@ -29,6 +29,11 @@ Pages runs a Jekyll build that skips underscore-prefixed paths.
 filename. Renaming a published file breaks a tile on the wall with no error
 anywhere. Do not rename or restructure `idea-wall/slides/` casually.
 
+**The Pages URL is case-sensitive.** The site is
+`https://profangrybeard.github.io/GAME405/`. Lowercase `/game405/` is a 404, so
+a slide URL typed into Miro by hand has to keep the capitals or the tile dies
+with no error anywhere.
+
 **Verify after publishing.** `idea-wall/tools/verify_publish.py` checks every
 manifest entry for a 200, an image content type, and a plausible byte count.
 Run it after a push with new content and before anyone builds the board.

@@ -162,6 +162,9 @@ def run_checks(root):
     check(m["count"] == len(titles) == len(list(slides.glob("*.jpg"))),
           "every manifest entry is its own file on disk")
     check("About Me" not in titles.values(), "no About Me page published")
+    check(all((slides / "blur" / f).exists() for f in titles)
+          and not list((slides / "blur").glob("okafor_*")),
+          "every published slide has a blurred twin, flagged decks have none")
     check(F["okafor"] in flagged and not list(slides.glob("okafor_*"))
           and (root / "review" / Path(F["okafor"]).stem / "p2.jpg").exists(),
           "two-idea deck goes to review/ with every page, nothing to slides/")
@@ -198,6 +201,7 @@ def run_checks(root):
 
     print("run 3: after deleting the pulled file")
     (slides / "tanaka_idea2.jpg").unlink()
+    (slides / "blur" / "tanaka_idea2.jpg").unlink()
     m, titles, flagged = render(root, ov)
     check(not (slides / "tanaka_idea2.jpg").exists()
           and not any("tanaka_idea2" in p for p in m["problems"]),

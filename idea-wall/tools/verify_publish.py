@@ -65,13 +65,13 @@ def main():
     session = requests.Session()
     failures = []
 
-    print(f"checking {len(slides)} slides against {base}")
+    print(f"checking {len(slides)} slides and their blurred twins against {base}")
     for s in slides:
-        url = f"{base}slides/{s['file']}"
-        problem = check(url, session)
-        if problem:
-            failures.append((s["file"], problem))
-            print(f"  FAIL {s['file']}: {problem}")
+        for path in (s["file"], "blur/" + s["file"]):
+            problem = check(f"{base}slides/{path}", session)
+            if problem:
+                failures.append((path, problem))
+                print(f"  FAIL {path}: {problem}")
 
     print()
     if failures:

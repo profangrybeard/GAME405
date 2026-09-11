@@ -127,12 +127,20 @@ without Tim's OK.
 
 ## Decided September 11, the wall sizes itself
 
-**The wall holds exactly the pitches that were delivered.** Tim: "the board
-needs to be smart enough to shrink from 69 due to lack of content and grow due
-to additional student registration." No placeholder tiles. A student who
-delivers one or two pitches gets one or two tiles, and a new registration grows
-the wall on the next run. This replaces the fixed 69 tiles, the stride of 23,
-and the first-come slots.
+**The wall shows every delivered pitch, and never fewer than 63 tiles.** Tim:
+"the board needs to be smart enough to shrink from 69 due to lack of content
+and grow due to additional student registration," and "keep a board minimum at
+63 with our placeholder names in tact so i can demo the board anytime." Below
+63 pitches, placeholder tiles fill the rest, each under the name that grid
+position has always had. Above 63 the wall grows with the pitches. A student
+who delivers one or two pitches gets one or two tiles. This replaces the fixed
+69 tiles, the stride of 23, and the first-come slots.
+
+**Blur is a switch for demos.** Tim: "give me a filter toggle that blurs the
+board slides so I can present a semi populated board with a suggestion of
+slides but the contents is blurred until I flip the switch." Miro cannot blur
+an image, so the renderer publishes a blurred twin of every slide, and
+`place_slides.py blur on|off` swaps the wall between the two on the next run.
 
 **The counters are real.** Tim: "the 69 count being placed text is concerning.
 I want a real counter up there." PITCHED counts delivered pitches, "in case some

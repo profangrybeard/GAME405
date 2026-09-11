@@ -82,18 +82,24 @@ python3 tools/place_slides.py
 ```
 
 It works out the whole wall from the manifest: the grid, a 16:9 frame, where
-each slide goes, and the counters. It writes `placement_plan.json` and the SVG
-steps in `placement_svg/`. Send each step, in file order, through the claude.ai
-Miro connector's `canvas_update_from_svg`. The plugin Miro connector is signed
-into a different org and cannot see this board.
+each slide goes, the placeholder tiles that keep the wall at 63 or more, and
+the counters. It writes `placement_plan.json` and the SVG steps in
+`placement_svg/`. Send each step, in file order, through the claude.ai Miro
+connector's `canvas_update_from_svg`. The plugin Miro connector is signed into
+a different org and cannot see this board.
 
-- `3_needs_ok.svg` deletes images: a slide that was pulled, or the old copy of
-  one that changed. Show Tim the list and send it only with his OK.
+- `4_needs_ok.svg` deletes: a slide that was pulled, the old copy of one that
+  changed, or placeholder tiles that slides have taken over. Show Tim the list
+  and send it only with his OK.
 - Then read the wall frame back with `canvas_read_as_svg` (widget
   `3458764683429206119`), save the SVG to `placement_read.svg`, and run
   `python3 tools/place_slides.py record placement_read.svg`. It checks that
-  every slide sits exactly on its box, nothing is doubled, and the counters read
-  right, then updates `placements.json`. Commit that file.
+  every slide and placeholder sits exactly on its box, nothing is doubled, and
+  the header reads right, then updates `placements.json`. Commit that file.
+
+`python3 tools/place_slides.py blur on` makes the next run show every slide as
+its blurred twin from `slides/blur/`, and `blur off` swaps the sharp slides
+back. Flipping it is a run of this loop, not an instant switch inside Miro.
 
 The counters are text. Miro cannot count on its own, so the placement step
 rewrites them from the manifest on every run, and `record` reads them back.

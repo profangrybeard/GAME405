@@ -157,6 +157,16 @@ def render(page, dest, width, fmt, quality):
         pix.save(dest)
 
 
+BLUR = 28  # px at 1920 wide: the text is unreadable, colour and composition still read
+
+
+def blur_twin(src, dest):
+    """A blurred copy of a published slide, for showing the wall before the reveal."""
+    from PIL import Image, ImageFilter
+    dest.parent.mkdir(exist_ok=True)
+    Image.open(src).filter(ImageFilter.GaussianBlur(BLUR)).save(dest, quality=85, optimize=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--decks", required=True)
@@ -238,6 +248,7 @@ def main():
                 continue
             page = doc[pno]
             render(page, out / name, args.width, args.format, args.quality)
+            blur_twin(out / name, out / "blur" / name)
             entries.append({
                 "file": name,
                 "student": pl["key"],
@@ -249,12 +260,13 @@ def main():
             })
         doc.close()
 
-    # Anything in --out that this run did not produce is still public.
+    # Anything in --out that this run did not produce is still public, blurred twins included.
     published = {e["file"] for e in entries}
-    for f in sorted(out.iterdir()):
+    blur = out / "blur"
+    for f in sorted([*out.iterdir(), *(blur.iterdir() if blur.exists() else [])]):
         if f.suffix.lower() in (".jpg", ".jpeg", ".png") and f.name not in published:
             why = "on the pulled list" if f.stem in pulled else "not in this run's manifest"
-            problems.append(f"{out.name}/{f.name}: {why}, delete it or it stays public")
+            problems.append(f"{out.name}/{f.relative_to(out).as_posix()}: {why}, delete it or it stays public")
 
     manifest = {
         "count": len(entries),

@@ -30,8 +30,9 @@ It lives in three places. Removing it from one is not removing it.
 1. Add its name without the extension, for example `"tanaka_idea2"`, to
    `pulled` in `idea-wall/overrides.json`. Without this the next render run
    puts it back, because the source deck is still in `decks/`.
-2. Delete the file from `idea-wall/slides/` and re-run the renderer. Its
-   manifest entry drops out, and the run reports the file if it is still there.
+2. Delete the file from `idea-wall/slides/` and its blurred twin from
+   `idea-wall/slides/blur/`, then re-run the renderer. Its manifest entry drops
+   out, and the run reports either file if it is still there.
 3. Run the placement step, `idea-wall/tools/place_slides.py` (see CLAUDE.md).
    It lists the slide for removal from the Miro board. Confirm it, and the
    image comes off the wall and the rest of the wall closes the gap.

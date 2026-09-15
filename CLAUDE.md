@@ -141,7 +141,7 @@ and against decks arriving over several runs: every frame 16:9, every slide
 inside the margins, no slide already up moving, no designer's slides touching.
 Run it after any change to the script.
 
-## Known state, September 11 2026
+## Known state, September 15 2026
 
 - Roster: 22 students in the Blackboard export, plus Yoseph Arafa under
   `extra_students` in `overrides.json`, so 23 and up to 69 pitches. Students

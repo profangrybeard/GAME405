@@ -1,16 +1,97 @@
 {
-  "count": 3,
-  "students": 1,
+  "count": 39,
+  "students": 13,
   "needs_review": [],
   "problems": [],
   "slides": [
+    {
+      "file": "beverly_idea1.jpg",
+      "student": "beverly",
+      "name": "Jim Beverly",
+      "idea": 1,
+      "title": "ROLL UP YOUR SLEEVE",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-13-19-59-45_GAME405_PreQuarter_JimBeverly.pdf",
+      "page": 2
+    },
+    {
+      "file": "beverly_idea2.jpg",
+      "student": "beverly",
+      "name": "Jim Beverly",
+      "idea": 2,
+      "title": "CAULK FIGHT",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-13-19-59-45_GAME405_PreQuarter_JimBeverly.pdf",
+      "page": 3
+    },
+    {
+      "file": "beverly_idea3.jpg",
+      "student": "beverly",
+      "name": "Jim Beverly",
+      "idea": 3,
+      "title": "ELEMENT ERYMADERE",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-13-19-59-45_GAME405_PreQuarter_JimBeverly.pdf",
+      "page": 4
+    },
+    {
+      "file": "contreras_idea1.jpg",
+      "student": "contreras",
+      "name": "Jassael Contreras",
+      "idea": 1,
+      "title": "Castle of Zavelstein",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002364625_attempt_2026-09-14-12-24-24_ContrerasJassaelPitchDeck - 9_16.pdf",
+      "page": 3
+    },
+    {
+      "file": "contreras_idea2.jpg",
+      "student": "contreras",
+      "name": "Jassael Contreras",
+      "idea": 2,
+      "title": "Galaxy of Maria",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002364625_attempt_2026-09-14-12-24-24_ContrerasJassaelPitchDeck - 9_16.pdf",
+      "page": 5
+    },
+    {
+      "file": "contreras_idea3.jpg",
+      "student": "contreras",
+      "name": "Jassael Contreras",
+      "idea": 3,
+      "title": "Race of Redemption",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002364625_attempt_2026-09-14-12-24-24_ContrerasJassaelPitchDeck - 9_16.pdf",
+      "page": 7
+    },
+    {
+      "file": "yin_idea1.jpg",
+      "student": "yin",
+      "name": "Eric Yin",
+      "idea": 1,
+      "title": "Roguelike badminton simulation game, where you build powerful gear and flashy combos as you battle through increasingly challenging matches to become the ultimate badminton champion.",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002466733_attempt_2026-09-14-02-20-39_Pitch_Deck_EricY (1)_EricYin.pdf",
+      "page": 2
+    },
+    {
+      "file": "yin_idea2.jpg",
+      "student": "yin",
+      "name": "Eric Yin",
+      "idea": 2,
+      "title": "Friendslop, chaotic, cooperative game, where teams of 2\u20134 players work together in a warehouse to sort, organize, and deliver packages before time runs out.",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002466733_attempt_2026-09-14-02-20-39_Pitch_Deck_EricY (1)_EricYin.pdf",
+      "page": 3
+    },
+    {
+      "file": "yin_idea3.jpg",
+      "student": "yin",
+      "name": "Eric Yin",
+      "idea": 3,
+      "title": "Foddian platform game, where you play as a tiny traveler carrying a magical umbrella through a flooded, abandoned city.",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002466733_attempt_2026-09-14-02-20-39_Pitch_Deck_EricY (1)_EricYin.pdf",
+      "page": 4
+    },
     {
       "file": "broughton_idea1.jpg",
       "student": "broughton",
       "name": "Lex Broughton",
       "idea": 1,
       "title": "SAY CHEESE!",
-      "source": "ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002648728_attempt_2026-09-09-17-41-31_ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
       "page": 3
     },
     {
@@ -19,7 +100,7 @@
       "name": "Lex Broughton",
       "idea": 2,
       "title": "FIRSTBORN",
-      "source": "ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002648728_attempt_2026-09-09-17-41-31_ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
       "page": 4
     },
     {
@@ -28,8 +109,251 @@
       "name": "Lex Broughton",
       "idea": 3,
       "title": "THE FOURTH CROWN",
-      "source": "ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002648728_attempt_2026-09-09-17-41-31_ATL_A01_GAME405_LexBroughton_GamePitch.pdf",
       "page": 5
+    },
+    {
+      "file": "smith_idea1.jpg",
+      "student": "smith",
+      "name": "Burke Smith",
+      "idea": 1,
+      "title": "UnStill Life",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002653106_attempt_2026-09-14-19-36-15_Game405_Smith_Burke_Prequarter_Pitch.pdf",
+      "page": 2
+    },
+    {
+      "file": "smith_idea2.jpg",
+      "student": "smith",
+      "name": "Burke Smith",
+      "idea": 2,
+      "title": "Bumper Car Beat em\u2019 up",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002653106_attempt_2026-09-14-19-36-15_Game405_Smith_Burke_Prequarter_Pitch.pdf",
+      "page": 4
+    },
+    {
+      "file": "smith_idea3.jpg",
+      "student": "smith",
+      "name": "Burke Smith",
+      "idea": 3,
+      "title": "Double Down",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002653106_attempt_2026-09-14-19-36-15_Game405_Smith_Burke_Prequarter_Pitch.pdf",
+      "page": 5
+    },
+    {
+      "file": "diaz_idea1.jpg",
+      "student": "diaz",
+      "name": "Leo Diaz",
+      "idea": 1,
+      "title": "Gladi-Racers",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002739763_attempt_2026-09-15-17-04-20_ATL_A01_GAME405_LeonardoDiaz_GamePitch.pdf",
+      "page": 2
+    },
+    {
+      "file": "diaz_idea2.jpg",
+      "student": "diaz",
+      "name": "Leo Diaz",
+      "idea": 2,
+      "title": "Cube Game",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002739763_attempt_2026-09-15-17-04-20_ATL_A01_GAME405_LeonardoDiaz_GamePitch.pdf",
+      "page": 3
+    },
+    {
+      "file": "diaz_idea3.jpg",
+      "student": "diaz",
+      "name": "Leo Diaz",
+      "idea": 3,
+      "title": "Twin Mag",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002739763_attempt_2026-09-15-17-04-20_ATL_A01_GAME405_LeonardoDiaz_GamePitch.pdf",
+      "page": 4
+    },
+    {
+      "file": "arafa_idea1.jpg",
+      "student": "arafa",
+      "name": "Yoseph Arafa",
+      "idea": 1,
+      "title": "Pitch 1: Focus!",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-14-16-13-55_Yoseph Arafa Pre-Quarter.pdf",
+      "page": 2
+    },
+    {
+      "file": "arafa_idea2.jpg",
+      "student": "arafa",
+      "name": "Yoseph Arafa",
+      "idea": 2,
+      "title": "Pitch 2: wizard battles",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-14-16-13-55_Yoseph Arafa Pre-Quarter.pdf",
+      "page": 3
+    },
+    {
+      "file": "arafa_idea3.jpg",
+      "student": "arafa",
+      "name": "Yoseph Arafa",
+      "idea": 3,
+      "title": "Pitch 3: Intergalactic Bug zapper",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-14-16-13-55_Yoseph Arafa Pre-Quarter.pdf",
+      "page": 4
+    },
+    {
+      "file": "butler_idea1.jpg",
+      "student": "butler",
+      "name": "Tashaun Butler",
+      "idea": 1,
+      "title": "INTRODUCTION HOARDBOUND KNOT ALLOWED INSIDE JOB",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002756740_attempt_2026-09-14-10-55-22_ATLTaShaunButler_SeniorStudio1_PreQuater_2026_GAME405.pdf",
+      "page": 3
+    },
+    {
+      "file": "butler_idea2.jpg",
+      "student": "butler",
+      "name": "Tashaun Butler",
+      "idea": 2,
+      "title": "INTRODUCTION HOARDBOUND KNOT ALLOWED INSIDE JOB",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002756740_attempt_2026-09-14-10-55-22_ATLTaShaunButler_SeniorStudio1_PreQuater_2026_GAME405.pdf",
+      "page": 4
+    },
+    {
+      "file": "butler_idea3.jpg",
+      "student": "butler",
+      "name": "Tashaun Butler",
+      "idea": 3,
+      "title": "INTRODUCTION HOARDBOUND KNOT ALLOWED INSIDE JOB",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002756740_attempt_2026-09-14-10-55-22_ATLTaShaunButler_SeniorStudio1_PreQuater_2026_GAME405.pdf",
+      "page": 5
+    },
+    {
+      "file": "pejic_idea1.jpg",
+      "student": "pejic",
+      "name": "Rebecca Pejic",
+      "idea": 1,
+      "title": "SNOW STALKERS",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002778816_attempt_2026-09-14-10-46-02_ATL_A01_GAME405_RebeccaPejic_GamePitch.pdf",
+      "page": 2
+    },
+    {
+      "file": "pejic_idea2.jpg",
+      "student": "pejic",
+      "name": "Rebecca Pejic",
+      "idea": 2,
+      "title": "SHOTGUN FAIRY",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002778816_attempt_2026-09-14-10-46-02_ATL_A01_GAME405_RebeccaPejic_GamePitch.pdf",
+      "page": 3
+    },
+    {
+      "file": "pejic_idea3.jpg",
+      "student": "pejic",
+      "name": "Rebecca Pejic",
+      "idea": 3,
+      "title": "GETAWAY DRIVERS",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002778816_attempt_2026-09-14-10-46-02_ATL_A01_GAME405_RebeccaPejic_GamePitch.pdf",
+      "page": 4
+    },
+    {
+      "file": "blancoponce_idea1.jpg",
+      "student": "blancoponce",
+      "name": "Emily Blanco-Ponce",
+      "idea": 1,
+      "title": "THE LAST DEPARTURE",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002802308_attempt_2026-09-14-10-46-13_ATL_A01_GAME405_EmilyBlanco_GamePitch_EmilyBlancoPonce.pdf",
+      "page": 2
+    },
+    {
+      "file": "blancoponce_idea2.jpg",
+      "student": "blancoponce",
+      "name": "Emily Blanco-Ponce",
+      "idea": 2,
+      "title": "CAN YOU HEAR ME?",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002802308_attempt_2026-09-14-10-46-13_ATL_A01_GAME405_EmilyBlanco_GamePitch_EmilyBlancoPonce.pdf",
+      "page": 3
+    },
+    {
+      "file": "blancoponce_idea3.jpg",
+      "student": "blancoponce",
+      "name": "Emily Blanco-Ponce",
+      "idea": 3,
+      "title": "SHINY",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002802308_attempt_2026-09-14-10-46-13_ATL_A01_GAME405_EmilyBlanco_GamePitch_EmilyBlancoPonce.pdf",
+      "page": 4
+    },
+    {
+      "file": "gultekin_idea1.jpg",
+      "student": "gultekin",
+      "name": "Jesse Gultekin",
+      "idea": 1,
+      "title": "Pull Yourself Together Pull Yourself Together",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002810008_attempt_2026-09-14-00-39-57_Senior Studio Projects_JesseGultekin.pdf",
+      "page": 2
+    },
+    {
+      "file": "gultekin_idea2.jpg",
+      "student": "gultekin",
+      "name": "Jesse Gultekin",
+      "idea": 2,
+      "title": "Graveyard Shift Graveyard Shift",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002810008_attempt_2026-09-14-00-39-57_Senior Studio Projects_JesseGultekin.pdf",
+      "page": 3
+    },
+    {
+      "file": "gultekin_idea3.jpg",
+      "student": "gultekin",
+      "name": "Jesse Gultekin",
+      "idea": 3,
+      "title": "Dead Air Casino Dead Air Casino",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002810008_attempt_2026-09-14-00-39-57_Senior Studio Projects_JesseGultekin.pdf",
+      "page": 4
+    },
+    {
+      "file": "chauhan_idea1.jpg",
+      "student": "chauhan",
+      "name": "Viren Chauhan",
+      "idea": 1,
+      "title": "CAMPUS RESEARCH",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002913746_attempt_2026-09-13-20-26-57_Viren Chauhan  GAME 405 Senior Studio Pitch Deck.pdf",
+      "page": 2
+    },
+    {
+      "file": "chauhan_idea2.jpg",
+      "student": "chauhan",
+      "name": "Viren Chauhan",
+      "idea": 2,
+      "title": "GRAVEYARD SHIFT",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002913746_attempt_2026-09-13-20-26-57_Viren Chauhan  GAME 405 Senior Studio Pitch Deck.pdf",
+      "page": 3
+    },
+    {
+      "file": "chauhan_idea3.jpg",
+      "student": "chauhan",
+      "name": "Viren Chauhan",
+      "idea": 3,
+      "title": "HOUSE RULES",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002913746_attempt_2026-09-13-20-26-57_Viren Chauhan  GAME 405 Senior Studio Pitch Deck.pdf",
+      "page": 4
+    },
+    {
+      "file": "rowe_idea1.jpg",
+      "student": "rowe",
+      "name": "Nathan Rowe",
+      "idea": 1,
+      "title": "PLATED BULLETS",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002970071_attempt_2026-09-13-20-52-29_ATL_A01_GAME405_NathanRowe_GamePitch.pdf",
+      "page": 2
+    },
+    {
+      "file": "rowe_idea2.jpg",
+      "student": "rowe",
+      "name": "Nathan Rowe",
+      "idea": 2,
+      "title": "DELVE",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002970071_attempt_2026-09-13-20-52-29_ATL_A01_GAME405_NathanRowe_GamePitch.pdf",
+      "page": 3
+    },
+    {
+      "file": "rowe_idea3.jpg",
+      "student": "rowe",
+      "name": "Nathan Rowe",
+      "idea": 3,
+      "title": "GATEKEEPER",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002970071_attempt_2026-09-13-20-52-29_ATL_A01_GAME405_NathanRowe_GamePitch.pdf",
+      "page": 4
     }
   ]
 }

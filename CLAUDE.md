@@ -146,10 +146,10 @@ Run it after any change to the script.
 - Roster: 22 students in the Blackboard export, plus Yoseph Arafa under
   `extra_students` in `overrides.json`, so 23 and up to 69 pitches. Students
   were still adding, so treat the count as a moving number.
-- The wall sizes itself to the delivered pitches. Since the switch on September
-  11 it shows Lex Broughton's 3 slides and 60 placeholders on the 63 floor,
-  blurred for demos (`"blur": true` in `overrides.json`). `blur off` and a run
-  of the placement loop is the reveal.
+- The wall sizes itself to the delivered pitches. As of September 15 it shows
+  39 slides by 13 designers and 24 placeholders on the 63 floor, blurred for
+  demos (`"blur": true` in `overrides.json`). `blur off` and a run of the
+  placement loop is the reveal.
 - Output: JPEG, 1920 wide, quality 92, roughly 350KB each.
 - `title` in the manifest is the largest type on the page. The wall does not
   show it, since each slide carries its own title, but it is worth a glance.

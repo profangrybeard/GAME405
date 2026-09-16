@@ -1,217 +1,148 @@
-"""Build the hand-count vote sheet from the manifest and the placement ledger.
+"""Build the hand-count vote sheet from the manifest.
 
-One 8.5 x 11 page: a map of the wall, five vote boxes, and a write-in.
+One 8.5 x 11 page: everyone who pitched, five checkboxes worth of votes, and
+one more picked off the wall.
 
-The ballot keys on the wall grid, not on slide titles. Titles come out of the
-decks and a third of them are unusable: duplicated across a student's three
-ideas, a single glyph, or a whole paragraph. A cell code like C2 is short,
-unambiguous, and a student can find it by counting across and down.
+It reads names and nothing else. Not the ledger, not the grid, not the slide
+titles. The board moves every time decks arrive, and a sheet that names cells
+or positions is wrong the moment it does. A name is stable, and a new designer
+is one more row. The rows tighten as the roster grows so it stays one page.
 
     python3 tools/make_ballot.py
 
 Writes ballot.html. Render it with Chrome:
 
     chrome --headless --disable-gpu --print-to-pdf=ballot.pdf --no-pdf-header-footer ballot.html
+
+`--fake N out.html` builds a sheet for N invented designers, to check a bigger
+roster still lands on one page.
 """
 
 import html
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-COL0, ROW0 = 80, 330
-COL_STEP, ROW_STEP = 336, 196
-COLS = "ABCDEFGHI"
 VOTES = 5
 
+# One page, however many people have pitched. The roster only grows, so the
+# rows tighten as it does instead of spilling onto a second sheet.
+# Measured, not guessed: each row is the loosest spacing that still prints on
+# one page at that ceiling. Re-measure if the header or the wall block changes.
+#          up to   box   pad     name    lines under the wall pick
+SIZES = [(16, "21", "4.5", "12", 2),
+         (20, "18", "3", "11", 2),
+         (24, "16", "2.5", "10.5", 1),
+         (30, "14", "1", "9.5", 1)]
 
-def cell_code(box):
-    """The wall box [x, y, w, h] as a grid code like C2."""
-    col = (box[0] - COL0) // COL_STEP
-    row = (box[1] - ROW0) // ROW_STEP + 1
-    return f"{COLS[col]}{row}"
+
+def metrics(n):
+    for limit, box, pad, name, lines in SIZES:
+        if n <= limit:
+            return {"BOX": box, "PAD": pad, "NAME": name, "lines": lines}
+    raise SystemExit(f"{n} designers is more than one page can hold, split the sheet")
 
 
-def read_wall():
+def designers():
+    """Everyone with slides up, by last name, with how many ideas they pitched."""
     manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
-    placed = json.loads((ROOT / "placements.json").read_text(encoding="utf-8"))["placed"]
-    wall = {}
+    counts = {}
     for slide in manifest["slides"]:
-        key = slide["file"].rsplit(".", 1)[0]
-        if key not in placed:
-            continue
-        code = cell_code(placed[key]["box"])
-        wall[code] = {"name": slide["name"], "last": slide["name"].split()[-1], "idea": slide["idea"]}
-    return wall
-
-
-def grid_rows(wall):
-    """Only the rows that hold slides, so an empty bottom row is not printed."""
-    rows = sorted({int(code[1:]) for code in wall})
-    return [[(f"{c}{r}", wall.get(f"{c}{r}")) for c in COLS] for r in rows]
-
-
-def designer_index(wall):
-    by_name = {}
-    for code, slide in wall.items():
-        by_name.setdefault(slide["last"], []).append((slide["idea"], code))
-    return [(last, [code for _, code in sorted(codes)]) for last, codes in sorted(by_name.items())]
+        counts[slide["name"]] = counts.get(slide["name"], 0) + 1
+    return sorted(counts.items(), key=lambda kv: kv[0].split()[-1])
 
 
 CSS = """
-@page { size: 8.5in 11in; margin: 0.45in; }
+@page { size: 8.5in 11in; margin: 0.5in; }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #111; font-size: 9pt; line-height: 1.3;
+  color: #111; font-size: 10pt; line-height: 1.35;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
-h1 { font-size: 17pt; letter-spacing: 0.02em; margin: 0; text-transform: uppercase; }
+h1 { font-size: 21pt; letter-spacing: 0.01em; margin: 0; text-transform: uppercase; }
 h2 {
-  font-size: 8pt; letter-spacing: 0.14em; text-transform: uppercase;
-  margin: 0 0 4pt; color: #444; font-weight: 700;
+  font-size: 9pt; letter-spacing: 0.16em; text-transform: uppercase;
+  margin: 0; font-weight: 700;
 }
-.rule { border-top: 1.5pt solid #111; margin: 5pt 0 8pt; }
-.thin { border-top: 0.5pt solid #bbb; margin: 8pt 0; }
+h2 .lede { letter-spacing: 0; text-transform: none; font-weight: 400; color: #666; }
 
-.top { display: flex; justify-content: space-between; align-items: flex-end; gap: 18pt; }
-.sub { font-size: 8.5pt; color: #444; margin-top: 2pt; }
-.who { text-align: right; font-size: 8pt; color: #444; white-space: nowrap; }
-.who span { display: inline-block; border-bottom: 0.75pt solid #111; margin-left: 5pt; }
-.who .nm { width: 150pt; }
-.who .dt { width: 66pt; }
+.top { display: flex; justify-content: space-between; align-items: flex-end; gap: 20pt; }
+.sub { font-size: 9.5pt; color: #555; margin-top: 3pt; }
+.who { text-align: right; font-size: 8.5pt; color: #555; white-space: nowrap; }
+.who span {
+  display: inline-block; border-bottom: 0.75pt solid #111;
+  margin-left: 6pt; width: 160pt;
+}
+.rule { border-top: 1.5pt solid #111; margin: 6pt 0 12pt; }
+.band { margin-bottom: 6pt; }
 
-.how { display: flex; gap: 10pt; margin-bottom: 9pt; }
-.how div {
-  flex: 1; border: 0.5pt solid #ccc; border-left: 2.5pt solid #111;
-  padding: 4pt 6pt; font-size: 8pt; line-height: 1.35;
-}
-.how b { display: block; font-size: 7.5pt; letter-spacing: 0.1em; text-transform: uppercase; }
+ol.picks { list-style: none; margin: 0; padding: 0; }
+ol.picks li { display: flex; align-items: center; gap: 12pt; padding: __PAD__pt 0; }
+ol.picks li + li { border-top: 0.5pt solid #e2e2e2; }
+.box { width: __BOX__pt; height: __BOX__pt; border: 1.25pt solid #111; flex: none; }
+.nm2 { font-size: __NAME__pt; font-weight: 600; width: 168pt; flex: none; }
+.ideas { font-size: 7.5pt; color: #999; width: 44pt; flex: none; letter-spacing: 0.04em; }
+.note { flex: 1; border-bottom: 0.5pt dotted #bbb; height: 15pt; }
 
-table.wall { width: 100%; border-collapse: collapse; table-layout: fixed; }
-table.wall th {
-  font-size: 7.5pt; color: #666; font-weight: 700; padding: 0 0 2pt;
-  letter-spacing: 0.06em;
-}
-table.wall th.rh, table.wall td.rh {
-  width: 15pt; font-size: 8pt; color: #666; text-align: center; border: none;
-}
-table.wall td {
-  border: 0.5pt solid #999; height: 41pt; padding: 3pt 3pt 2pt; vertical-align: top;
-}
-table.wall td.empty { background: #f4f4f4; border-style: dashed; border-color: #ccc; }
-.code { font-size: 7pt; color: #777; letter-spacing: 0.06em; }
-.last { font-size: 8.5pt; font-weight: 700; line-height: 1.1; margin-top: 1pt;
-        word-break: break-word; hyphens: auto; }
-.idea { font-size: 7pt; color: #555; margin-top: 1pt; }
-
-.votes { margin-top: 3pt; }
-.vrow { display: flex; align-items: stretch; gap: 8pt; margin-bottom: 6pt; }
-.vnum { width: 13pt; font-size: 9pt; color: #888; padding-top: 9pt; text-align: right; }
-.vbox {
-  width: 74pt; height: 31pt; border: 1.25pt solid #111;
-  display: flex; align-items: center; justify-content: center;
-}
-.vbox .hint { font-size: 6.5pt; color: #aaa; letter-spacing: 0.1em; }
-.vline { flex: 1; border-bottom: 0.75pt solid #999; position: relative; }
-.vline .hint {
-  position: absolute; top: 100%; left: 3pt; padding-top: 1.5pt;
-  font-size: 6.5pt; color: #aaa; letter-spacing: 0.08em;
-}
-.wi .vbox { border-style: dashed; }
-
-.index { font-size: 7.5pt; color: #333; columns: 3; column-gap: 16pt; }
-.index div { break-inside: avoid; margin-bottom: 1.5pt; }
-.index b { font-weight: 700; }
-.index span { color: #666; letter-spacing: 0.06em; }
-.foot { font-size: 7pt; color: #888; margin-top: 7pt; }
+.wall { border: 1.25pt solid #111; padding: 9pt 11pt 10pt; margin-top: 12pt; }
+.wall .line { border-bottom: 0.75pt solid #999; height: 22pt; margin-top: 7pt; }
+.wall .lbl { font-size: 7pt; color: #999; letter-spacing: 0.1em; text-transform: uppercase; }
+.foot { font-size: 8pt; color: #888; margin-top: 10pt; display: flex; justify-content: space-between; }
 """
 
 
-def build(wall):
-    rows = grid_rows(wall)
-    head = "".join(f'<th>{c}</th>' for c in COLS)
-    body = []
-    for row in rows:
-        cells = []
-        for code, slide in row:
-            if slide is None:
-                cells.append('<td class="empty"></td>')
-                continue
-            cells.append(
-                f'<td><div class="code">{code}</div>'
-                f'<div class="last">{html.escape(slide["last"])}</div>'
-                f'<div class="idea">idea {slide["idea"]}</div></td>'
-            )
-        num = row[0][0][1:]
-        body.append(f'<tr><td class="rh">{num}</td>{"".join(cells)}</tr>')
+def build(people):
+    m = metrics(len(people))
+    css = CSS
+    for key in ("BOX", "PAD", "NAME"):
+        css = css.replace(f"__{key}__", m[key])
 
-    vote_rows = "".join(
-        f'<div class="vrow"><div class="vnum">{i}</div>'
-        f'<div class="vbox"><span class="hint">CODE</span></div>'
-        f'<div class="vline"><span class="hint">DESIGNER, AND WHAT THE IDEA IS</span></div></div>'
-        for i in range(1, VOTES + 1)
+    rows = "".join(
+        f'<li><div class="box"></div>'
+        f'<div class="nm2">{html.escape(name)}</div>'
+        f'<div class="ideas">{n} idea{"s" if n != 1 else ""}</div>'
+        f'<div class="note"></div></li>'
+        for name, n in people
     )
-
-    index = "".join(
-        f'<div><b>{html.escape(last)}</b> <span>{" ".join(codes)}</span></div>'
-        for last, codes in designer_index(wall)
-    )
-
-    count = len(wall)
-    designers = len({s["last"] for s in wall.values()})
+    wall_lines = '<div class="line"></div>' * m["lines"]
 
     return f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <title>GAME 405 Idea Wall Vote</title>
-<style>{CSS}</style>
+<style>{css}</style>
 </head>
 <body>
 
 <div class="top">
   <div>
     <h1>Idea Wall Vote</h1>
-    <div class="sub">GAME 405 &middot; Senior Studio &middot; {count} ideas from {designers} designers</div>
+    <div class="sub">GAME 405 &middot; Senior Studio &middot; five pitches, plus one off the wall</div>
   </div>
-  <div class="who">
-    Name <span class="nm"></span><br /><br />
-    Date <span class="dt"></span>
-  </div>
+  <div class="who">Name <span></span></div>
 </div>
 <div class="rule"></div>
 
-<div class="how">
-  <div><b>1 &middot; Browse</b>Take the period. Walk the wall while people pitch. Every idea in the room is up there.</div>
-  <div><b>2 &middot; Pick five</b>Five votes, no ranking, no order. Five different ideas. You may vote for your own.</div>
-  <div><b>3 &middot; Write the code</b>Find the tile on the map below, copy its code into a box. Add the designer so I can read it back.</div>
+<div class="band">
+  <h2>Check five &nbsp;<span class="lede">Any five. No ranking. Your own counts. The line on the right is yours if you want it.</span></h2>
 </div>
 
-<h2>The wall &middot; count across for the letter, down for the number</h2>
-<table class="wall">
-  <tr><th class="rh"></th>{head}</tr>
-  {"".join(body)}
-</table>
+<ol class="picks">{rows}</ol>
 
-<div class="thin"></div>
-
-<h2>My votes &middot; five from the wall, one write&#8209;in</h2>
-<div class="votes">{vote_rows}</div>
-
-<div class="vrow wi">
-  <div class="vnum">6</div>
-  <div class="vbox"><span class="hint">WRITE&#8209;IN</span></div>
-  <div class="vline"><span class="hint">AN IDEA THAT IS NOT ON THE WALL, OR TWO OF THESE CROSSED TOGETHER</span></div>
+<div class="wall">
+  <h2>And one off the wall &nbsp;<span class="lede">Browse while people pitch. Anything that is not one of the {VOTES} above.</span></h2>
+  {wall_lines}
+  <div class="lbl">Whose idea, and what it is</div>
 </div>
 
-<div class="thin"></div>
-
-<h2>By designer</h2>
-<div class="index">{index}</div>
-
-<div class="foot">Hand counted. Turn this in before you leave.</div>
+<div class="foot">
+  <span>Hand counted. Turn it in before you leave.</span>
+  <span>miro.com/app/board/uXjVHoWCO8w=</span>
+</div>
 
 </body>
 </html>
@@ -219,17 +150,20 @@ def build(wall):
 
 
 def main():
-    wall = read_wall()
-    if not wall:
-        raise SystemExit("nothing on the wall yet, run the placement step first")
+    people = designers()
+    if not people:
+        raise SystemExit("no slides in the manifest yet, run the render step first")
     out = ROOT / "ballot.html"
-    out.write_text(build(wall), encoding="utf-8")
-    designers = len({s["last"] for s in wall.values()})
-    print(f"wrote {out.name}: {len(wall)} ideas by {designers} designers, {VOTES} votes and a write-in")
-    print("render it with:")
-    print('  "/c/Program Files/Google/Chrome/Application/chrome.exe" --headless --disable-gpu \\')
-    print("    --print-to-pdf=ballot.pdf --no-pdf-header-footer ballot.html")
+    out.write_text(build(people), encoding="utf-8")
+    print(f"wrote {out.name}: {len(people)} pitching, check {VOTES} and one off the wall")
 
 
 if __name__ == "__main__":
-    main()
+    if "--fake" in sys.argv:
+        at = sys.argv.index("--fake")
+        count = int(sys.argv[at + 1])
+        people = [(f"Firstname Lastname{i:02d}", 3) for i in range(count)]
+        Path(sys.argv[at + 2]).write_text(build(people), encoding="utf-8")
+        print(f"fake sheet for {count} designers")
+    else:
+        main()

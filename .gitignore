@@ -19,6 +19,10 @@ idea-wall/placement_plan.json
 idea-wall/placement_svg/
 idea-wall/placement_read.svg
 
+# Built fresh from the manifest by make_ballot.py. The tool is the record.
+idea-wall/ballot.html
+idea-wall/ballot.pdf
+
 # Local
 .venv/
 __pycache__/

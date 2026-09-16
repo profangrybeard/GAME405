@@ -141,15 +141,22 @@ and against decks arriving over several runs: every frame 16:9, every slide
 inside the margins, no slide already up moving, no designer's slides touching.
 Run it after any change to the script.
 
-## Known state, September 15 2026
+## Known state, September 16 2026
 
 - Roster: 22 students in the Blackboard export, plus Yoseph Arafa under
-  `extra_students` in `overrides.json`, so 23 and up to 69 pitches. Students
-  were still adding, so treat the count as a moving number.
-- The wall sizes itself to the delivered pitches. As of September 15 it shows
-  45 slides by 15 designers and 18 placeholders on the 63 floor, revealed:
-  `"blur": false` in `overrides.json`, so the sharp slides are showing. `blur
-  on` and a run of the placement loop covers them again.
+  `extra_students` in `overrides.json`, so 23. Every one of them has a deck.
+- The wall sizes itself to the delivered pitches. As of September 16 it shows
+  68 slides by 23 designers and no placeholders, on a 10 x 8 grid at
+  3504x1971. It is revealed: `"blur": false` in `overrides.json`. `blur on`
+  and a run of the placement loop covers it again.
+- 68 and not 69 because Yuchi Su pitched one idea, not three, and publishes
+  two slides. An override in `pages` can list fewer than three.
+- Tashaun Butler and Jesse Gultekin turned in single-idea deep dives on
+  September 16 rather than new three-idea decks. Their original decks still
+  feed the wall; the newer files sit in `decks/superseded/`.
+- There is one text on the board that the placement step did not create, a
+  note reading "Write in VOTES from the wall excepted." `record` reports it as
+  unplanned on every run. It is Tim's. Do not delete it.
 - Output: JPEG, 1920 wide, quality 92, roughly 350KB each.
 - `title` in the manifest is the largest type on the page. The wall does not
   show it, since each slide carries its own title, but it is worth a glance.

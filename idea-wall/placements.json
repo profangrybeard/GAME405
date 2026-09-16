@@ -5,8 +5,8 @@
     0
   ],
   "frame": [
-    3168,
-    1782
+    3504,
+    1971
   ],
   "header": {
     "title": {
@@ -20,38 +20,38 @@
       "y": 132
     },
     "pitches": {
-      "id": "3458764683460692790",
-      "x": 2108,
+      "id": "3458764683974663817",
+      "x": 2444,
       "y": 10
     },
     "pitches_label": {
-      "id": "3458764683460692791",
-      "x": 2108,
+      "id": "3458764683974663818",
+      "x": 2444,
       "y": 196
     },
     "jam": {
-      "id": "3458764683460692792",
-      "x": 2448,
+      "id": "3458764683974663820",
+      "x": 2784,
       "y": 10
     },
     "jam_label": {
-      "id": "3458764683460692793",
-      "x": 2448,
+      "id": "3458764683974663821",
+      "x": 2784,
       "y": 196
     },
     "production": {
-      "id": "3458764683460692794",
-      "x": 2788,
+      "id": "3458764683974663822",
+      "x": 3124,
       "y": 10
     },
     "production_label": {
-      "id": "3458764683460692795",
-      "x": 2788,
+      "id": "3458764683974663823",
+      "x": 3124,
       "y": 196
     },
     "designers": {
-      "id": "3458764683460692796",
-      "x": 2108,
+      "id": "3458764683974663824",
+      "x": 2444,
       "y": 230
     }
   },
@@ -164,6 +164,18 @@
       "cover_id": null,
       "cover_sha256": null
     },
+    "bazemore_idea1": {
+      "image_id": "3458764683973583640",
+      "sha256": "e8e6a12258f13a180472cbf41c1febdcb41761e84e1d83dd72d066672ab858a3",
+      "box": [
+        3104,
+        330,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
     "yin_idea1": {
       "image_id": "3458764683865843561",
       "sha256": "f2f3b9828a99201df111e713244e4881c7a850eb2520961c8bab45d22f9a00d1",
@@ -189,8 +201,8 @@
       "cover_sha256": null
     },
     "beverly_idea1": {
-      "image_id": "3458764683865843553",
-      "sha256": "9ee27c14b8ee1adf3953dcf78f9b465e55107740904272209bc0f03462fcc190",
+      "image_id": "3458764683974663071",
+      "sha256": "2b915db4b13ec0bd327455f6fcb786cb45ba5cb27cd3f819a0a1d53d1302bcee",
       "box": [
         752,
         526,
@@ -201,8 +213,8 @@
       "cover_sha256": null
     },
     "arafa_idea1": {
-      "image_id": "3458764683865843547",
-      "sha256": "b4e8853e7b2ca5f50fa9cf157077574668a539ea10860340290b8052d46db75b",
+      "image_id": "3458764683974663074",
+      "sha256": "1e78e39c7008528488b3063087b4274319afe1e669de8ccc74da427d35c17ebb",
       "box": [
         1088,
         526,
@@ -272,6 +284,18 @@
       "cover_id": null,
       "cover_sha256": null
     },
+    "su_idea1": {
+      "image_id": "3458764683973583648",
+      "sha256": "c65eae8c6c2db61bf7b5bb64d783fac84473bd2cc0d369316c42381d43f42f39",
+      "box": [
+        3104,
+        526,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
     "blancoponce_idea2": {
       "image_id": "3458764683865843590",
       "sha256": "5de3e9d86fea58af8cbcf6fd892718438dc9a26c795b15b9aba72a209e1a16a8",
@@ -333,8 +357,8 @@
       "cover_sha256": null
     },
     "beverly_idea2": {
-      "image_id": "3458764683865895392",
-      "sha256": "639013d4edb19c12cec9a2ef2c9f0d8eab8e48078a75aa14954a4974eafb5bc0",
+      "image_id": "3458764683974663076",
+      "sha256": "74fe6a5a5347a918223527214bf500e32962ae31cc9069ca8e4c103e4d314ac0",
       "box": [
         1760,
         722,
@@ -345,8 +369,8 @@
       "cover_sha256": null
     },
     "arafa_idea2": {
-      "image_id": "3458764683865895401",
-      "sha256": "c6e1fa0eb6cc0047f1281f2be4386235b8e6ac3875f47b0ca7c1f8e19dd13e2b",
+      "image_id": "3458764683974663075",
+      "sha256": "50b589c7821d758a566086911d99b53cbb7d63e4accf187d28465eb5f933431a",
       "box": [
         2096,
         722,
@@ -373,6 +397,18 @@
       "sha256": "7e71e91cb4de36d1541c670a174fead0ab5b7fd60d0559841e4df256048d180a",
       "box": [
         2768,
+        722,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "liu_idea1": {
+      "image_id": "3458764683973583641",
+      "sha256": "a4bb6ccd11bccc9734dd875f3ec8fe5aa9dcc1a8d9431fe41b234351224f26f8",
+      "box": [
+        3104,
         722,
         320,
         180
@@ -477,8 +513,8 @@
       "cover_sha256": null
     },
     "beverly_idea3": {
-      "image_id": "3458764683865895410",
-      "sha256": "d58bd852f4201e5a734ab1b9eb5a2d91589e014e5a0766d7307783dc12091509",
+      "image_id": "3458764683974663069",
+      "sha256": "f00031ceba0300781ad79f8e1720f4522fba5c1975129248a3e477e339943f88",
       "box": [
         2768,
         918,
@@ -488,9 +524,21 @@
       "cover_id": null,
       "cover_sha256": null
     },
+    "jones_idea1": {
+      "image_id": "3458764683973583650",
+      "sha256": "5fea17d6428758dd3a08394759de63fd5cc63c209fd596dcd7ee811d3152ab3c",
+      "box": [
+        3104,
+        918,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
     "arafa_idea3": {
-      "image_id": "3458764683865895411",
-      "sha256": "55e510a4557884364c624fe8ba121617ca2b291086cdc91542bcac985d412790",
+      "image_id": "3458764683974663072",
+      "sha256": "46de934fed9ce0d27a5890dd856e048dce18d4e907bcfe2ba50f52acd2fe8037",
       "box": [
         80,
         1114,
@@ -595,170 +643,235 @@
       ],
       "cover_id": null,
       "cover_sha256": null
+    },
+    "nguyen_idea1": {
+      "image_id": "3458764683973583644",
+      "sha256": "43b25c17832c5debcaa6b84bbae268160418929c6783b3676e0d8375e7a8de6b",
+      "box": [
+        3104,
+        1114,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "zhang_idea1": {
+      "image_id": "3458764683974663426",
+      "sha256": "893ce154847766277e63416f1f2f28b0d3ff713bd255e46ea54fe12a165f554d",
+      "box": [
+        80,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "rachel_idea1": {
+      "image_id": "3458764683973583634",
+      "sha256": "45b6f9e1a3f9b960643de057e9912b0c839b9f493dd35e78c5ddd7796f2a8dd7",
+      "box": [
+        416,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "tang_idea1": {
+      "image_id": "3458764683973583649",
+      "sha256": "3474cd593bc7a9bc3c44013f0445090c1297d7b63475548d540d0a8fa0eb59a4",
+      "box": [
+        752,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "bazemore_idea2": {
+      "image_id": "3458764683973583653",
+      "sha256": "6adbaf9f6289d8d60bc2d592a5a0d8eca3b83cd9c42a0499d43063b4725ee6fa",
+      "box": [
+        1088,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "su_idea2": {
+      "image_id": "3458764683973583647",
+      "sha256": "6b9bcbaba39e4d51842287c0bca36493cfa982aad2dcb01746f8e9cfa43a594e",
+      "box": [
+        1424,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "liu_idea2": {
+      "image_id": "3458764683973583659",
+      "sha256": "fa95cd0d7e25ce064759289192c3d2807d6bad6fd18ec6986cedda7cc8192a42",
+      "box": [
+        1760,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "jones_idea2": {
+      "image_id": "3458764683973583664",
+      "sha256": "52d9899d25a2229f4c9c5ec4090ba414eb7ae12c78f03e8715b158a7bcdbe9db",
+      "box": [
+        2096,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "nguyen_idea2": {
+      "image_id": "3458764683973583656",
+      "sha256": "5ec86158025c7d25c8517f86d408f861a4d8a1c45568e2550e755e9926e6919d",
+      "box": [
+        2432,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "zhang_idea2": {
+      "image_id": "3458764683974663428",
+      "sha256": "809d59230652b80d0e73a0caa5345f2986124e66b6902c8fb867d4154ae41aab",
+      "box": [
+        2768,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "rachel_idea2": {
+      "image_id": "3458764683973583671",
+      "sha256": "681d6be90c6f2950a3bd0d72e47ef9f1078f5b206ddbb2f5f6ca22ee86af9a17",
+      "box": [
+        3104,
+        1310,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "tang_idea2": {
+      "image_id": "3458764683973583665",
+      "sha256": "c603633af0e8aac3d597f1c44e535a2a86b5325cbed3d4523798b0a60dc5e302",
+      "box": [
+        80,
+        1506,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "bazemore_idea3": {
+      "image_id": "3458764683973583667",
+      "sha256": "ca96f94889848e305e0a002e2403b684b9871b413dd066958ca828397779625d",
+      "box": [
+        416,
+        1506,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "liu_idea3": {
+      "image_id": "3458764683973583668",
+      "sha256": "1754b5ccc02ae625e65b2b4c53c60e0fc382ccc177f53484a35d91102db2f663",
+      "box": [
+        752,
+        1506,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "jones_idea3": {
+      "image_id": "3458764683973583670",
+      "sha256": "3cb687c36f6108eea75a6bd48c104ca7fbd24cbb49264efeeec6f131792de820",
+      "box": [
+        1088,
+        1506,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "nguyen_idea3": {
+      "image_id": "3458764683973583674",
+      "sha256": "44e90458c679ca880df2fe00bc94d6cf6d39b55cdcac233e1df1b66bb2c5f43c",
+      "box": [
+        1424,
+        1506,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "zhang_idea3": {
+      "image_id": "3458764683974084696",
+      "sha256": "644b274cf39e2e38bfb69229ae6bed9d0c59684ebf70677ceae3feafd7b383db",
+      "box": [
+        1760,
+        1506,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "rachel_idea3": {
+      "image_id": "3458764683974084694",
+      "sha256": "987cbc3c248d984af4c65f70d26ebb35be2a5fc8736026173b9c0ca1b939e69b",
+      "box": [
+        2096,
+        1506,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
+    },
+    "tang_idea3": {
+      "image_id": "3458764683974084693",
+      "sha256": "bc43dcc9d5b8829e699d8e12cd46ab5140c23505b3978ef9fc38348294a4f257",
+      "box": [
+        2432,
+        1506,
+        320,
+        180
+      ],
+      "cover_id": null,
+      "cover_sha256": null
     }
   },
-  "tiles": {
-    "student23_idea2": {
-      "tile_id": "3458764683460673267",
-      "box": [
-        80,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student01_idea3": {
-      "tile_id": "3458764683460673268",
-      "box": [
-        416,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student02_idea3": {
-      "tile_id": "3458764683460673269",
-      "box": [
-        752,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student03_idea3": {
-      "tile_id": "3458764683460673270",
-      "box": [
-        1088,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student04_idea3": {
-      "tile_id": "3458764683460673271",
-      "box": [
-        1424,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student05_idea3": {
-      "tile_id": "3458764683460673272",
-      "box": [
-        1760,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student06_idea3": {
-      "tile_id": "3458764683460673273",
-      "box": [
-        2096,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student07_idea3": {
-      "tile_id": "3458764683460673274",
-      "box": [
-        2432,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student08_idea3": {
-      "tile_id": "3458764683460673275",
-      "box": [
-        2768,
-        1310,
-        320,
-        180
-      ]
-    },
-    "student09_idea3": {
-      "tile_id": "3458764683460673276",
-      "box": [
-        80,
-        1506,
-        320,
-        180
-      ]
-    },
-    "student10_idea3": {
-      "tile_id": "3458764683460673277",
-      "box": [
-        416,
-        1506,
-        320,
-        180
-      ]
-    },
-    "student11_idea3": {
-      "tile_id": "3458764683460673278",
-      "box": [
-        752,
-        1506,
-        320,
-        180
-      ]
-    },
-    "student12_idea3": {
-      "tile_id": "3458764683460673279",
-      "box": [
-        1088,
-        1506,
-        320,
-        180
-      ]
-    },
-    "student13_idea3": {
-      "tile_id": "3458764683460673280",
-      "box": [
-        1424,
-        1506,
-        320,
-        180
-      ]
-    },
-    "student14_idea3": {
-      "tile_id": "3458764683460673281",
-      "box": [
-        1760,
-        1506,
-        320,
-        180
-      ]
-    },
-    "student15_idea3": {
-      "tile_id": "3458764683460673282",
-      "box": [
-        2096,
-        1506,
-        320,
-        180
-      ]
-    },
-    "student16_idea3": {
-      "tile_id": "3458764683460673283",
-      "box": [
-        2432,
-        1506,
-        320,
-        180
-      ]
-    },
-    "student17_idea3": {
-      "tile_id": "3458764683460673284",
-      "box": [
-        2768,
-        1506,
-        320,
-        180
-      ]
-    }
-  }
+  "tiles": {}
 }

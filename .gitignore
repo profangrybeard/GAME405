@@ -22,6 +22,8 @@ idea-wall/placement_read.svg
 # Built fresh from the manifest by make_ballot.py. The tool is the record.
 idea-wall/ballot.html
 idea-wall/ballot.pdf
+idea-wall/tally.html
+idea-wall/tally.pdf
 
 # Local
 .venv/

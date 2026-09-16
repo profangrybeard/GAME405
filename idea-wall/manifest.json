@@ -1,6 +1,6 @@
 {
-  "count": 39,
-  "students": 13,
+  "count": 45,
+  "students": 15,
   "needs_review": [],
   "problems": [],
   "slides": [
@@ -86,6 +86,33 @@
       "page": 4
     },
     {
+      "file": "woods_idea1.jpg",
+      "student": "woods",
+      "name": "Roland Woods",
+      "idea": 1,
+      "title": "Dung eon of the Dreamer is a cooperative action rog uelite where players descend throug h the deteriorating mind of the god who dreamed mytholog y into existence. Players fig ht, explore, solve encounters, and combine divine abilities to restore the Dreamer before his forg otten gods disappear with him.",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002643583_attempt_2026-09-14-20-01-58_Roland_Woods_GAME405_Three_Concepts.pdf",
+      "page": 2
+    },
+    {
+      "file": "woods_idea2.jpg",
+      "student": "woods",
+      "name": "Roland Woods",
+      "idea": 2,
+      "title": "BREAKLINE is a third-person movement-action game where a courier races throug h a collapsing vertical city while carrying an unstable energ y core. The player chains parkour movement and momentum-powered attacks to escape each district before the city consumes them.",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002643583_attempt_2026-09-14-20-01-58_Roland_Woods_GAME405_Three_Concepts.pdf",
+      "page": 3
+    },
+    {
+      "file": "woods_idea3.jpg",
+      "student": "woods",
+      "name": "Roland Woods",
+      "idea": 3,
+      "title": "FOODCHAIN is a third-person survival-puzzle game where a stranded researcher navig ates an alien ecosystem. The player observes and manipulates relationships between creatures to safely traverse dang erous environments and reach extraction.",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002643583_attempt_2026-09-14-20-01-58_Roland_Woods_GAME405_Three_Concepts.pdf",
+      "page": 4
+    },
+    {
       "file": "broughton_idea1.jpg",
       "student": "broughton",
       "name": "Lex Broughton",
@@ -138,6 +165,33 @@
       "title": "Double Down",
       "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002653106_attempt_2026-09-14-19-36-15_Game405_Smith_Burke_Prequarter_Pitch.pdf",
       "page": 5
+    },
+    {
+      "file": "dai_idea1.jpg",
+      "student": "dai",
+      "name": "Yikai Dai",
+      "idea": 1,
+      "title": "\u201c",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002679718_attempt_2026-09-15-03-53-59_Yikaidai_Game405_W01 \u00b7 Sep 16 \u00b7 Pitch deck.pdf",
+      "page": 2
+    },
+    {
+      "file": "dai_idea2.jpg",
+      "student": "dai",
+      "name": "Yikai Dai",
+      "idea": 2,
+      "title": "\u201c",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002679718_attempt_2026-09-15-03-53-59_Yikaidai_Game405_W01 \u00b7 Sep 16 \u00b7 Pitch deck.pdf",
+      "page": 3
+    },
+    {
+      "file": "dai_idea3.jpg",
+      "student": "dai",
+      "name": "Yikai Dai",
+      "idea": 3,
+      "title": "\u201c",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002679718_attempt_2026-09-15-03-53-59_Yikaidai_Game405_W01 \u00b7 Sep 16 \u00b7 Pitch deck.pdf",
+      "page": 4
     },
     {
       "file": "diaz_idea1.jpg",

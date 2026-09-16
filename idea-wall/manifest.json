@@ -1,6 +1,6 @@
 {
-  "count": 45,
-  "students": 15,
+  "count": 68,
+  "students": 23,
   "needs_review": [],
   "problems": [],
   "slides": [
@@ -10,7 +10,7 @@
       "name": "Jim Beverly",
       "idea": 1,
       "title": "ROLL UP YOUR SLEEVE",
-      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-13-19-59-45_GAME405_PreQuarter_JimBeverly.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-16-07-50-05_GAME405_PreQuarter_JimBeverly.pdf",
       "page": 2
     },
     {
@@ -19,7 +19,7 @@
       "name": "Jim Beverly",
       "idea": 2,
       "title": "CAULK FIGHT",
-      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-13-19-59-45_GAME405_PreQuarter_JimBeverly.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-16-07-50-05_GAME405_PreQuarter_JimBeverly.pdf",
       "page": 3
     },
     {
@@ -28,7 +28,7 @@
       "name": "Jim Beverly",
       "idea": 3,
       "title": "ELEMENT ERYMADERE",
-      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-13-19-59-45_GAME405_PreQuarter_JimBeverly.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002034843_attempt_2026-09-16-07-50-05_GAME405_PreQuarter_JimBeverly.pdf",
       "page": 4
     },
     {
@@ -84,6 +84,33 @@
       "title": "Foddian platform game, where you play as a tiny traveler carrying a magical umbrella through a flooded, abandoned city.",
       "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002466733_attempt_2026-09-14-02-20-39_Pitch_Deck_EricY (1)_EricYin.pdf",
       "page": 4
+    },
+    {
+      "file": "jones_idea1.jpg",
+      "student": "jones",
+      "name": "Zane Jones",
+      "idea": 1,
+      "title": "The Crow & The Crooked Cabret",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002616090_attempt_2026-09-16-11-06-50_PQA_Pitch Deck_ZaneJones.pdf",
+      "page": 3
+    },
+    {
+      "file": "jones_idea2.jpg",
+      "student": "jones",
+      "name": "Zane Jones",
+      "idea": 2,
+      "title": "Devil In Disguise",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002616090_attempt_2026-09-16-11-06-50_PQA_Pitch Deck_ZaneJones.pdf",
+      "page": 4
+    },
+    {
+      "file": "jones_idea3.jpg",
+      "student": "jones",
+      "name": "Zane Jones",
+      "idea": 3,
+      "title": "Krilltical Mission",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002616090_attempt_2026-09-16-11-06-50_PQA_Pitch Deck_ZaneJones.pdf",
+      "page": 5
     },
     {
       "file": "woods_idea1.jpg",
@@ -167,6 +194,51 @@
       "page": 5
     },
     {
+      "file": "su_idea1.jpg",
+      "student": "su",
+      "name": "Yuchi Su",
+      "idea": 1,
+      "title": "Shadows of Echo",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002655666_attempt_2026-09-16-10-43-37_RichardSu_PitchDeck_W01_YuchiSu.pdf",
+      "page": 4
+    },
+    {
+      "file": "su_idea2.jpg",
+      "student": "su",
+      "name": "Yuchi Su",
+      "idea": 2,
+      "title": "",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002655666_attempt_2026-09-16-10-43-37_RichardSu_PitchDeck_W01_YuchiSu.pdf",
+      "page": 5
+    },
+    {
+      "file": "bazemore_idea1.jpg",
+      "student": "bazemore",
+      "name": "Brynn Bazemore",
+      "idea": 1,
+      "title": "Silk Road",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002668454_attempt_2026-09-16-10-18-27_Brynn Bazemore w01.pdf",
+      "page": 2
+    },
+    {
+      "file": "bazemore_idea2.jpg",
+      "student": "bazemore",
+      "name": "Brynn Bazemore",
+      "idea": 2,
+      "title": "Fighting Time",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002668454_attempt_2026-09-16-10-18-27_Brynn Bazemore w01.pdf",
+      "page": 3
+    },
+    {
+      "file": "bazemore_idea3.jpg",
+      "student": "bazemore",
+      "name": "Brynn Bazemore",
+      "idea": 3,
+      "title": "Cooking Curse",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002668454_attempt_2026-09-16-10-18-27_Brynn Bazemore w01.pdf",
+      "page": 4
+    },
+    {
       "file": "dai_idea1.jpg",
       "student": "dai",
       "name": "Yikai Dai",
@@ -192,6 +264,60 @@
       "title": "\u201c",
       "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002679718_attempt_2026-09-15-03-53-59_Yikaidai_Game405_W01 \u00b7 Sep 16 \u00b7 Pitch deck.pdf",
       "page": 4
+    },
+    {
+      "file": "zhang_idea1.jpg",
+      "student": "zhang",
+      "name": "Chi Zhang",
+      "idea": 1,
+      "title": "BILND SHIFT",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002696532_attempt_2026-09-16-09-43-59_game-405-chizhang-Pitch deck_ChiZhang.pdf",
+      "page": 2
+    },
+    {
+      "file": "zhang_idea2.jpg",
+      "student": "zhang",
+      "name": "Chi Zhang",
+      "idea": 2,
+      "title": "Ashbound",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002696532_attempt_2026-09-16-09-43-59_game-405-chizhang-Pitch deck_ChiZhang.pdf",
+      "page": 3
+    },
+    {
+      "file": "zhang_idea3.jpg",
+      "student": "zhang",
+      "name": "Chi Zhang",
+      "idea": 3,
+      "title": "Ghost Delivery",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002696532_attempt_2026-09-16-09-43-59_game-405-chizhang-Pitch deck_ChiZhang.pdf",
+      "page": 4
+    },
+    {
+      "file": "nguyen_idea1.jpg",
+      "student": "nguyen",
+      "name": "Lily Nguyen",
+      "idea": 1,
+      "title": "",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002715174_attempt_2026-09-16-10-35-54_Presentation 16 (1)_LilyNguyen.pdf",
+      "page": 3
+    },
+    {
+      "file": "nguyen_idea2.jpg",
+      "student": "nguyen",
+      "name": "Lily Nguyen",
+      "idea": 2,
+      "title": "",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002715174_attempt_2026-09-16-10-35-54_Presentation 16 (1)_LilyNguyen.pdf",
+      "page": 5
+    },
+    {
+      "file": "nguyen_idea3.jpg",
+      "student": "nguyen",
+      "name": "Lily Nguyen",
+      "idea": 3,
+      "title": "",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002715174_attempt_2026-09-16-10-35-54_Presentation 16 (1)_LilyNguyen.pdf",
+      "page": 7
     },
     {
       "file": "diaz_idea1.jpg",
@@ -221,12 +347,39 @@
       "page": 4
     },
     {
+      "file": "rachel_idea1.jpg",
+      "student": "rachel",
+      "name": "Mike Rachel",
+      "idea": 1,
+      "title": "Idea #1: Maze Survival Game",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002743585_attempt_2026-09-16-10-38-45_Mike Rachel.pdf",
+      "page": 3
+    },
+    {
+      "file": "rachel_idea2.jpg",
+      "student": "rachel",
+      "name": "Mike Rachel",
+      "idea": 2,
+      "title": "Idea #2: Medival Action- Advanture Game",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002743585_attempt_2026-09-16-10-38-45_Mike Rachel.pdf",
+      "page": 4
+    },
+    {
+      "file": "rachel_idea3.jpg",
+      "student": "rachel",
+      "name": "Mike Rachel",
+      "idea": 3,
+      "title": "Idea #3: Third Person Shooter Game",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002743585_attempt_2026-09-16-10-38-45_Mike Rachel.pdf",
+      "page": 5
+    },
+    {
       "file": "arafa_idea1.jpg",
       "student": "arafa",
       "name": "Yoseph Arafa",
       "idea": 1,
       "title": "Pitch 1: Focus!",
-      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-14-16-13-55_Yoseph Arafa Pre-Quarter.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-15-21-00-41_Yoseph Arafa Pre-Quarter.pdf",
       "page": 2
     },
     {
@@ -235,7 +388,7 @@
       "name": "Yoseph Arafa",
       "idea": 2,
       "title": "Pitch 2: wizard battles",
-      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-14-16-13-55_Yoseph Arafa Pre-Quarter.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-15-21-00-41_Yoseph Arafa Pre-Quarter.pdf",
       "page": 3
     },
     {
@@ -244,7 +397,7 @@
       "name": "Yoseph Arafa",
       "idea": 3,
       "title": "Pitch 3: Intergalactic Bug zapper",
-      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-14-16-13-55_Yoseph Arafa Pre-Quarter.pdf",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002752114_attempt_2026-09-15-21-00-41_Yoseph Arafa Pre-Quarter.pdf",
       "page": 4
     },
     {
@@ -302,6 +455,33 @@
       "page": 4
     },
     {
+      "file": "tang_idea1.jpg",
+      "student": "tang",
+      "name": "Kuangxi Tang",
+      "idea": 1,
+      "title": "THE PERFECT ALIBI",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002798080_attempt_2026-09-16-10-47-15_PitchDeck_Cathy_2026Fall_KuangxiTang.pdf",
+      "page": 3
+    },
+    {
+      "file": "tang_idea2.jpg",
+      "student": "tang",
+      "name": "Kuangxi Tang",
+      "idea": 2,
+      "title": "AFTERLIGHT",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002798080_attempt_2026-09-16-10-47-15_PitchDeck_Cathy_2026Fall_KuangxiTang.pdf",
+      "page": 4
+    },
+    {
+      "file": "tang_idea3.jpg",
+      "student": "tang",
+      "name": "Kuangxi Tang",
+      "idea": 3,
+      "title": "INKBODY",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002798080_attempt_2026-09-16-10-47-15_PitchDeck_Cathy_2026Fall_KuangxiTang.pdf",
+      "page": 5
+    },
+    {
       "file": "blancoponce_idea1.jpg",
       "student": "blancoponce",
       "name": "Emily Blanco-Ponce",
@@ -353,6 +533,33 @@
       "idea": 3,
       "title": "Dead Air Casino Dead Air Casino",
       "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002810008_attempt_2026-09-14-00-39-57_Senior Studio Projects_JesseGultekin.pdf",
+      "page": 4
+    },
+    {
+      "file": "liu_idea1.jpg",
+      "student": "liu",
+      "name": "Dingding Liu",
+      "idea": 1,
+      "title": "MedicFood",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002820820_attempt_2026-09-16-02-30-31_4_Pages_3_Pitchs_From_Steven_Liu_DingdingLiu.pdf",
+      "page": 2
+    },
+    {
+      "file": "liu_idea2.jpg",
+      "student": "liu",
+      "name": "Dingding Liu",
+      "idea": 2,
+      "title": "Mirrico",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002820820_attempt_2026-09-16-02-30-31_4_Pages_3_Pitchs_From_Steven_Liu_DingdingLiu.pdf",
+      "page": 3
+    },
+    {
+      "file": "liu_idea3.jpg",
+      "student": "liu",
+      "name": "Dingding Liu",
+      "idea": 3,
+      "title": "Wandering the World",
+      "source": "W01 \u00b7 Sep 16 \u00b7 Pitch deck_002820820_attempt_2026-09-16-02-30-31_4_Pages_3_Pitchs_From_Steven_Liu_DingdingLiu.pdf",
       "page": 4
     },
     {

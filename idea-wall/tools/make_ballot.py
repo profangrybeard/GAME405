@@ -6,7 +6,10 @@ one more picked off the wall.
 It reads names and nothing else. Not the ledger, not the grid, not the slide
 titles. The board moves every time decks arrive, and a sheet that names cells
 or positions is wrong the moment it does. A name is stable, and a new designer
-is one more row. The rows tighten as the roster grows so it stays one page.
+is one more row, and the rows tighten as the roster grows so it stays one page.
+
+It also prints blank rows out to the size of the class, so a student who walks
+in the morning of with three slides can still be voted for by name.
 
     python3 tools/make_ballot.py
 
@@ -26,15 +29,23 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 VOTES = 5
 
+# A row for every student in the class, named when we have their deck and blank
+# when we do not. Someone walks in the morning of with three slides and nobody
+# can vote for them unless there is a line to write them on.
+ROSTER = 23  # 22 in the Blackboard export plus Yoseph Arafa in overrides.json
+SPARE = 2  # somebody always registers late
+
 # One page, however many people have pitched. The roster only grows, so the
 # rows tighten as it does instead of spilling onto a second sheet.
 # Measured, not guessed: each row is the loosest spacing that still prints on
-# one page at that ceiling. Re-measure if the header or the wall block changes.
+# one page at that ceiling, counting the blanks. Re-measure if the header, the
+# walk-in band, or the wall block changes. With ROSTER at 23 only the last two
+# tiers come up; the roomier ones are there for a smaller class.
 #          up to   box   pad     name    lines under the wall pick
 SIZES = [(16, "21", "4.5", "12", 2),
          (20, "18", "3", "11", 2),
-         (24, "16", "2.5", "10.5", 1),
-         (30, "14", "1", "9.5", 1)]
+         (24, "16", "2", "10.5", 1),
+         (30, "14", "0.5", "9.5", 1)]
 
 
 def metrics(n):
@@ -78,12 +89,19 @@ h2 .lede { letter-spacing: 0; text-transform: none; font-weight: 400; color: #66
 }
 .rule { border-top: 1.5pt solid #111; margin: 6pt 0 12pt; }
 .band { margin-bottom: 6pt; }
+.walkins { margin: 7pt 0 4pt; }
+.walkins h2 { color: #444; }
 
 ol.picks { list-style: none; margin: 0; padding: 0; }
 ol.picks li { display: flex; align-items: center; gap: 12pt; padding: __PAD__pt 0; }
 ol.picks li + li { border-top: 0.5pt solid #e2e2e2; }
 .box { width: __BOX__pt; height: __BOX__pt; border: 1.25pt solid #111; flex: none; }
-.nm2 { font-size: __NAME__pt; font-weight: 600; width: 168pt; flex: none; }
+/* One fixed height for both kinds of row, so a blank measures like a name. */
+.nm2 {
+  font-size: __NAME__pt; font-weight: 600; width: 168pt; flex: none;
+  height: 14pt; display: flex; align-items: center;
+}
+.nm2.fill { border-bottom: 0.75pt solid #999; }
 .ideas { font-size: 7.5pt; color: #999; width: 44pt; flex: none; letter-spacing: 0.04em; }
 .note { flex: 1; border-bottom: 0.5pt dotted #bbb; height: 15pt; }
 
@@ -95,7 +113,8 @@ ol.picks li + li { border-top: 0.5pt solid #e2e2e2; }
 
 
 def build(people):
-    m = metrics(len(people))
+    blanks = max(ROSTER - len(people), SPARE)
+    m = metrics(len(people) + blanks)
     css = CSS
     for key in ("BOX", "PAD", "NAME"):
         css = css.replace(f"__{key}__", m[key])
@@ -107,6 +126,12 @@ def build(people):
         f'<div class="note"></div></li>'
         for name, n in people
     )
+    blank_rows = (
+        '<li><div class="box"></div>'
+        '<div class="nm2 fill"></div>'
+        '<div class="ideas"></div>'
+        '<div class="note"></div></li>'
+    ) * blanks
     wall_lines = '<div class="line"></div>' * m["lines"]
 
     return f"""<!doctype html>
@@ -133,6 +158,12 @@ def build(people):
 
 <ol class="picks">{rows}</ol>
 
+<div class="walkins">
+  <h2>Pitched today, not on the wall &nbsp;<span class="lede">Write the name. Their work landed after the wall went up, so vote for them here.</span></h2>
+</div>
+
+<ol class="picks">{blank_rows}</ol>
+
 <div class="wall">
   <h2>And one off the wall &nbsp;<span class="lede">Browse while people pitch. Anything that is not one of the {VOTES} above.</span></h2>
   {wall_lines}
@@ -155,7 +186,9 @@ def main():
         raise SystemExit("no slides in the manifest yet, run the render step first")
     out = ROOT / "ballot.html"
     out.write_text(build(people), encoding="utf-8")
-    print(f"wrote {out.name}: {len(people)} pitching, check {VOTES} and one off the wall")
+    blanks = max(ROSTER - len(people), SPARE)
+    print(f"wrote {out.name}: {len(people)} named and {blanks} blank, "
+          f"check {VOTES} and one off the wall")
 
 
 if __name__ == "__main__":

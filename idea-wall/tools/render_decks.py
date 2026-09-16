@@ -148,10 +148,38 @@ def load_overrides(path):
 
 # ---------- rendering ----------
 
+WALL_RATIO = 16 / 9  # every tile on the board is a 16:9 cell
+MAT = (16, 27, 42)  # the board's own background, so the bars read as the wall
+
+
+def letterbox(pix, dest, fmt, quality):
+    """Pad a page that is not 16:9 out to 16:9.
+
+    Miro keeps an image's aspect ratio, so a 4:3 slide dropped into a 16:9
+    cell comes back taller than the cell and overhangs its neighbours. Padding
+    here means the board never has to think about it.
+    """
+    from PIL import Image
+
+    im = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+    w = max(im.width, round(im.height * WALL_RATIO))
+    h = max(im.height, round(im.width / WALL_RATIO))
+    out = Image.new("RGB", (w, h), MAT)
+    out.paste(im, ((w - im.width) // 2, (h - im.height) // 2))
+    if fmt == "jpg":
+        out.save(dest, format="JPEG", quality=quality, optimize=True)
+    else:
+        out.save(dest)
+
+
 def render(page, dest, width, fmt, quality):
     zoom = width / page.rect.width
     pix = page.get_pixmap(matrix=pymupdf.Matrix(zoom, zoom), alpha=False)
-    if fmt == "jpg":
+    if abs(pix.width / pix.height - WALL_RATIO) > 0.01:
+        # Only a page that needs padding takes the PIL path. Re-encoding the
+        # rest would change every byte, and the board would rebuild every tile.
+        letterbox(pix, dest, fmt, quality)
+    elif fmt == "jpg":
         pix.pil_save(dest, format="JPEG", quality=quality, optimize=True)
     else:
         pix.save(dest)

@@ -147,9 +147,9 @@ Run it after any change to the script.
   `extra_students` in `overrides.json`, so 23 and up to 69 pitches. Students
   were still adding, so treat the count as a moving number.
 - The wall sizes itself to the delivered pitches. As of September 15 it shows
-  45 slides by 15 designers and 18 placeholders on the 63 floor, blurred for
-  demos (`"blur": true` in `overrides.json`). `blur off` and a run of the
-  placement loop is the reveal.
+  45 slides by 15 designers and 18 placeholders on the 63 floor, revealed:
+  `"blur": false` in `overrides.json`, so the sharp slides are showing. `blur
+  on` and a run of the placement loop covers them again.
 - Output: JPEG, 1920 wide, quality 92, roughly 350KB each.
 - `title` in the manifest is the largest type on the page. The wall does not
   show it, since each slide carries its own title, but it is worth a glance.

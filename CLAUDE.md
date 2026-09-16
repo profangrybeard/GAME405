@@ -147,7 +147,7 @@ Run it after any change to the script.
   `extra_students` in `overrides.json`, so 23 and up to 69 pitches. Students
   were still adding, so treat the count as a moving number.
 - The wall sizes itself to the delivered pitches. As of September 15 it shows
-  39 slides by 13 designers and 24 placeholders on the 63 floor, blurred for
+  45 slides by 15 designers and 18 placeholders on the 63 floor, blurred for
   demos (`"blur": true` in `overrides.json`). `blur off` and a run of the
   placement loop is the reveal.
 - Output: JPEG, 1920 wide, quality 92, roughly 350KB each.

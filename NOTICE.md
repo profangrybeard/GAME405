@@ -7,7 +7,8 @@ Atlanta. They own their work. Nothing here is licensed for reuse. Publishing a
 slide to the class idea wall is a display permission for the purpose of the
 course, not a transfer of anything.
 
-The tools in `*/tools/` are the instructor's and may be reused freely.
+The tools in `idea-wall/tools/` are the instructor's and are MIT licensed. See
+`idea-wall/tools/LICENSE`.
 
 ## What gets published
 
